@@ -1,4 +1,4 @@
-import type { NewsArticle } from "@/types/news";
+import type { NewsArticle } from "@/features/news/types/news";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -8,7 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function NewsCard({ title, description, source, category, date }: NewsArticle) {
+const NewsCard = ({
+  title,
+  description,
+  source,
+  category,
+  date,
+}: NewsArticle): React.ReactElement => {
   return (
     <Card size="sm" className="flex flex-col">
       <CardHeader>
@@ -24,4 +30,6 @@ export function NewsCard({ title, description, source, category, date }: NewsArt
       </CardFooter>
     </Card>
   );
-}
+};
+
+export default NewsCard;
