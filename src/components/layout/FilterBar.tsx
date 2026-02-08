@@ -1,33 +1,49 @@
-import { useState } from "react";
 import { useAppSelector } from "@/app/hooks";
 import {
   selectSelectedCategories,
   selectSelectedSources,
 } from "@/features/preferences/store/preferencesSlice";
-import { Input } from "@/components/ui/input";
-import MultiSelectCombobox from "../shared/multiSelectCombobox/multi-select-combobox";
+import SingleSelectCombobox from "../shared/singleSelectCombobox/single-select-combobox";
+import DatePicker from "../shared/datePicker/date-picker";
 
-const FilterBar = (): React.ReactElement => {
+interface FilterBarProps {
+  activeSource: string;
+  onSourceChange: (source: string) => void;
+  activeCategory: string;
+  onCategoryChange: (category: string) => void;
+  date: string;
+  onDateChange: (date: string) => void;
+}
+
+const FilterBar = ({
+  activeSource,
+  onSourceChange,
+  activeCategory,
+  onCategoryChange,
+  date,
+  onDateChange,
+}: FilterBarProps): React.ReactElement => {
   const preferredSources = useAppSelector(selectSelectedSources);
   const preferredCategories = useAppSelector(selectSelectedCategories);
 
-  const [activeSources, setActiveSources] = useState<string[]>([]);
-  const [activeCategories, setActiveCategories] = useState<string[]>([]);
-
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Input type="date" className="w-auto" />
-      <MultiSelectCombobox
+      <DatePicker
+        value={date}
+        onValueChange={onDateChange}
+        placeholder="Pick a date"
+      />
+      <SingleSelectCombobox
         label="Source"
         items={preferredSources}
-        value={activeSources}
-        onValueChange={setActiveSources}
+        value={activeSource}
+        onValueChange={onSourceChange}
       />
-      <MultiSelectCombobox
+      <SingleSelectCombobox
         label="Category"
         items={preferredCategories}
-        value={activeCategories}
-        onValueChange={setActiveCategories}
+        value={activeCategory}
+        onValueChange={onCategoryChange}
       />
     </div>
   );
