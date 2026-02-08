@@ -11,6 +11,7 @@ const normalizeNewsApiArticle = (
   description: article.description ?? "",
   url: article.url,
   imageUrl: article.urlToImage,
+  author: article.author ?? null,
   source: "NewsAPI",
   category,
   date: article.publishedAt,

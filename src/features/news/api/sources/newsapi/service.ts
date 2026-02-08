@@ -1,5 +1,6 @@
 import axiosInstance from "../../lib/axiosInstance";
 import type { SearchParams, SourceService, SearchResult, ApiError } from "../../lib/types";
+import { getOldestDate } from "../../lib/utils";
 import type { NewsApiResponseDto } from "./types";
 import { normalizeNewsApiResponse } from "./normalizer";
 
@@ -26,11 +27,6 @@ const buildRequestParams = (
   }
 
   return requestParams;
-};
-
-const getOldestDate = (dates: string[]): string | null => {
-  if (dates.length === 0) return null;
-  return dates.reduce((oldest, d) => (d < oldest ? d : oldest));
 };
 
 const newsApiService: SourceService = {

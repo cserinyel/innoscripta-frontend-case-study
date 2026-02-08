@@ -4,6 +4,7 @@ export interface NewsArticle {
   description: string;
   url: string;
   imageUrl: string | null;
+  author?: string | null;
   source: string;
   category: string;
   date: string;

@@ -17,6 +17,7 @@ const NewsCard = ({
   source,
   category,
   date,
+  author,
 }: NewsArticle): React.ReactElement => {
   return (
     <a
@@ -25,7 +26,10 @@ const NewsCard = ({
       rel="noopener noreferrer"
       className="group block"
     >
-      <Card size="sm" className="flex h-full flex-col transition-shadow group-hover:shadow-md">
+      <Card
+        size="sm"
+        className="flex h-full flex-col transition-shadow group-hover:shadow-md"
+      >
         {imageUrl && (
           <div className="overflow-hidden rounded-t-lg">
             <img
@@ -38,7 +42,10 @@ const NewsCard = ({
         )}
         <CardHeader>
           <CardTitle className="line-clamp-2">{title}</CardTitle>
-          <span className="text-muted-foreground text-xs">{formatDate(date)}</span>
+          <span className="text-muted-foreground text-xs">
+            {formatDate(date)}
+          </span>
+          <span className="text-muted-foreground text-xs">{author}</span>
         </CardHeader>
         <CardContent className="flex-1">
           <p className="text-muted-foreground line-clamp-3 text-sm">

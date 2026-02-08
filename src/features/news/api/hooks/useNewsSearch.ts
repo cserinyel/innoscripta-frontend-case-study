@@ -6,7 +6,7 @@ import { sourceRegistry, sortByDateDesc } from "../newsAggregator";
 import { getErrorMessage } from "../lib/utils";
 
 const buildMetaKey = (sourceName: string, params: SearchParams): string =>
-  `${sourceName}:${params.keyword}:${params.category}`;
+  `${sourceName}:${params.keyword}:${params.category}:${params.date}`;
 
 const needsNextPage = (date: string, meta: SearchMeta): boolean => {
   if (!meta.oldestDate) return false;
