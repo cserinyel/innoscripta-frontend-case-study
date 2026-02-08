@@ -17,7 +17,6 @@ export interface ApiError {
 
 export interface SearchMeta {
   totalResults: number;
-  oldestDate: string | null;
   pageSize: number;
 }
 

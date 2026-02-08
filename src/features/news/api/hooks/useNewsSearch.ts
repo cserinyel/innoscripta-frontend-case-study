@@ -1,22 +1,12 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useQueries } from "@tanstack/react-query";
 import type { NewsArticle } from "@/features/news/types/news";
-import type { SearchParams, SearchResult, SearchMeta, ApiError } from "../lib/types";
-import { sourceRegistry, sortByDateDesc } from "../newsAggregator";
+import type { SearchParams, SearchResult, ApiError } from "../lib/types";
+import { sourceRegistry } from "../newsAggregator";
 import { getErrorMessage } from "../lib/utils";
-
-const buildMetaKey = (sourceName: string, params: SearchParams): string =>
-  `${sourceName}:${params.keyword}:${params.category}:${params.date}`;
-
-const needsNextPage = (date: string, meta: SearchMeta): boolean => {
-  if (!meta.oldestDate) return false;
-  const oldestDay = meta.oldestDate.slice(0, 10);
-  return date < oldestDay && meta.totalResults > meta.pageSize;
-};
 
 export const useNewsSearch = () => {
   const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
-  const [metaMap, setMetaMap] = useState<Record<string, SearchMeta>>({});
 
   const activeSources = useMemo(() => {
     if (!searchParams) return [];
@@ -25,43 +15,14 @@ export const useNewsSearch = () => {
       : sourceRegistry;
   }, [searchParams]);
 
-  const effectiveParamsPerSource = useMemo(() => {
-    if (!searchParams) return [];
-    return activeSources.map((source) => {
-      const meta = metaMap[buildMetaKey(source.name, searchParams)];
-      const page =
-        meta && searchParams.date && needsNextPage(searchParams.date, meta)
-          ? 1
-          : 0;
-      return { ...searchParams, page };
-    });
-  }, [searchParams, activeSources, metaMap]);
-
   const results = useQueries({
     queries: searchParams
-      ? activeSources.map((source, i) => {
-          const params = effectiveParamsPerSource[i];
-          return {
-            queryKey: [source.name, ...source.getFetchKey(params)],
-            queryFn: (): Promise<SearchResult> => source.search(params),
-          };
-        })
+      ? activeSources.map((source) => ({
+          queryKey: [source.name, ...source.getFetchKey(searchParams)],
+          queryFn: (): Promise<SearchResult> => source.search(searchParams),
+        }))
       : [],
   });
-
-  // Store meta only from initial (page 0) fetches to avoid oscillation
-  useEffect(() => {
-    if (!searchParams) return;
-    results.forEach((result, index) => {
-      if (result.data?.meta) {
-        const source = activeSources[index];
-        if (source) {
-          const key = buildMetaKey(source.name, searchParams);
-          setMetaMap((prev) => (key in prev ? prev : { ...prev, [key]: result.data!.meta! }));
-        }
-      }
-    });
-  }, [results, activeSources, searchParams]);
 
   const isLoading = results.some((r) => r.isLoading && r.isFetching);
   const isError = results.some((r) => r.isError);
@@ -86,14 +47,12 @@ export const useNewsSearch = () => {
       }
     });
 
-    const filtered = searchParams?.date
-      ? allArticles.filter((a) => a.date.startsWith(searchParams.date))
-      : allArticles;
+    allArticles.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
 
-    filtered.sort(sortByDateDesc);
-
-    return { articles: filtered, errors: allErrors };
-  }, [results, activeSources, searchParams]);
+    return { articles: allArticles, errors: allErrors };
+  }, [results, activeSources]);
 
   const search = useCallback((params: SearchParams) => {
     setSearchParams({ ...params });

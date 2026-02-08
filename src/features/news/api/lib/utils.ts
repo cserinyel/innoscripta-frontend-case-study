@@ -29,15 +29,6 @@ export const isApiError = (error: unknown): error is ApiError => {
 };
 
 /**
- * Returns the oldest (earliest) date string from an array of ISO date strings.
- * Returns null if the array is empty.
- */
-export const getOldestDate = (dates: string[]): string | null => {
-  if (dates.length === 0) return null;
-  return dates.reduce((oldest, d) => (d < oldest ? d : oldest));
-};
-
-/**
  * Extracts a user-friendly error message from an unknown error.
  */
 export const getErrorMessage = (error: unknown): string => {

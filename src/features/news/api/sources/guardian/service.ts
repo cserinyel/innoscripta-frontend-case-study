@@ -1,14 +1,13 @@
 import axiosInstance from "../../lib/axiosInstance";
 import type { SearchParams, SourceService, SearchResult, ApiError } from "../../lib/types";
-import { getOldestDate } from "../../lib/utils";
 import type { GuardianResponseDto } from "./types";
 import { normalizeGuardianResponse } from "./normalizer";
 import { mapCategoryToGuardianSections } from "./categories";
+import { DEFAULT_PAGE_SIZE } from "@/constants";
 
 const API_KEY = import.meta.env.VITE_GUARDIAN_API_KEY as string;
 const BASE_URL = import.meta.env.VITE_GUARDIAN_BASE_URL as string;
 
-const DEFAULT_PAGE_SIZE = 20;
 const SHOW_FIELDS = "headline,trailText,byline,thumbnail";
 
 const buildRequestParams = (
@@ -69,7 +68,6 @@ const guardianService: SourceService = {
       articles,
       meta: {
         totalResults: response.data.response.total,
-        oldestDate: getOldestDate(articles.map((a) => a.date)),
         pageSize,
       },
     };
