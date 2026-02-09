@@ -29,7 +29,7 @@ const NewsCard = ({
     >
       <Card
         size="sm"
-        className="flex h-full flex-col transition-shadow group-hover:shadow-md"
+        className="flex h-full flex-col transition-shadow group-hover:shadow-md pt-0!"
       >
         <div className="overflow-hidden rounded-t-lg">
           <img

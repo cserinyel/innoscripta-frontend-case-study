@@ -25,9 +25,9 @@ const buildRequestParams = (
   const sources = mapCategoryToNewsApiSources(params.category);
   if (sources) {
     requestParams.sources = sources;
-  } else if (!params.keyword) {
-    // /everything requires at least one of: q, sources, or domains.
-    // When neither keyword nor category is provided, fall back to all known sources.
+  } else {
+    // No category selected – include all known sources so results are
+    // scoped to our curated list regardless of whether a keyword is present.
     requestParams.sources = getAllNewsApiSources();
   }
 

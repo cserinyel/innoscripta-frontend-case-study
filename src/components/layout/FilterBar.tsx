@@ -27,25 +27,28 @@ const FilterBar = ({
   const preferredCategories = useAppSelector(selectSelectedCategories);
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <>
       <DatePicker
         value={date}
         onValueChange={onDateChange}
         placeholder="Pick a date"
+        className="w-full md:w-48 md:flex-1"
       />
       <SingleSelectCombobox
         label="Source"
         items={preferredSources}
         value={activeSource}
         onValueChange={onSourceChange}
+        className="w-full md:w-36 md:flex-1 md:max-w-48"
       />
       <SingleSelectCombobox
         label="Category"
         items={preferredCategories}
         value={activeCategory}
         onValueChange={onCategoryChange}
+        className="w-full md:w-36 md:flex-1 md:max-w-48"
       />
-    </div>
+    </>
   );
 };
 

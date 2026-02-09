@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { format, parseISO } from "date-fns";
-import { Calendar as CalendarIcon, X } from "lucide-react";
+import { Calendar as CalendarIcon, X } from "lucide-react";import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -13,6 +13,7 @@ interface DatePickerProps {
   value: string;
   onValueChange: (value: string) => void;
   placeholder?: string;
+  className?: string;
 }
 
 const toDate = (value: string): Date | undefined => {
@@ -30,6 +31,7 @@ const DatePicker = ({
   value,
   onValueChange,
   placeholder = "Pick a date",
+  className,
 }: DatePickerProps): React.ReactElement => {
   const [open, setOpen] = useState(false);
   const selected = toDate(value);
@@ -51,7 +53,7 @@ const DatePicker = ({
         <Button
           variant="outline"
           data-empty={!selected}
-          className="data-[empty=true]:text-muted-foreground w-auto justify-start gap-2 text-left font-normal"
+          className={cn("data-[empty=true]:text-muted-foreground w-auto justify-start gap-2 text-left font-normal", className)}
         >
           <CalendarIcon className="size-4" />
           {selected ? format(selected, "PPP") : <span>{placeholder}</span>}

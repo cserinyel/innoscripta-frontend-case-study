@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import SearchInput from "@/components/shared/searchInput/search-input";
 import FilterBar from "@/components/layout/FilterBar";
 import NewsCard from "@/features/news/components/newsCard/news-card";
@@ -62,7 +63,9 @@ const NewsContent = (): React.ReactElement => {
     }
 
     if (articles.length === 0 && sourceErrors.length > 0) {
-      return <ErrorState message={sourceErrors[0].message} onRetry={handleSearch} />;
+      return (
+        <ErrorState message={sourceErrors[0].message} onRetry={handleSearch} />
+      );
     }
 
     if (articles.length === 0) {
@@ -86,21 +89,29 @@ const NewsContent = (): React.ReactElement => {
   };
 
   return (
-    <div ref={contentRef}>
-      <SearchInput
-        value={keyword}
-        onChange={setKeyword}
-        onSearch={handleSearch}
-        isLoading={isLoading}
-      />
-      <FilterBar
-        activeSource={activeSource}
-        onSourceChange={setActiveSource}
-        activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
-        date={date}
-        onDateChange={setDate}
-      />
+    <div ref={contentRef} className="space-y-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <SearchInput
+          value={keyword}
+          onChange={setKeyword}
+          onSearch={handleSearch}
+        />
+        <FilterBar
+          activeSource={activeSource}
+          onSourceChange={setActiveSource}
+          activeCategory={activeCategory}
+          onCategoryChange={setActiveCategory}
+          date={date}
+          onDateChange={setDate}
+        />
+        <Button
+          className="w-full md:w-auto"
+          onClick={handleSearch}
+          disabled={isLoading}
+        >
+          {isLoading ? "Searching..." : "Search"}
+        </Button>
+      </div>
       {renderContent()}
     </div>
   );
