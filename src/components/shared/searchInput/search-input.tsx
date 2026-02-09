@@ -1,9 +1,4 @@
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import { Search } from "lucide-react";
+import FilterInput from "@/components/shared/filterInput/filter-input";
 
 interface SearchInputProps {
   value: string;
@@ -16,24 +11,14 @@ const SearchInput = ({
   onChange,
   onSearch,
 }: SearchInputProps): React.ReactElement => {
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      onSearch();
-    }
-  };
-
   return (
-    <InputGroup className="w-full md:flex-1 md:max-w-80">
-      <InputGroupAddon>
-        <Search className="size-4" />
-      </InputGroupAddon>
-      <InputGroupInput
-        placeholder="Search articles by keyword"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
-    </InputGroup>
+    <FilterInput
+      value={value}
+      onChange={onChange}
+      onSubmit={onSearch}
+      placeholder="Search articles by keyword"
+      className="w-full md:flex-1 md:max-w-80"
+    />
   );
 };
 

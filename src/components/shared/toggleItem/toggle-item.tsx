@@ -15,7 +15,7 @@ const ToggleItem = ({
       type="button"
       onClick={onToggle}
       className={cn(
-        "flex items-center justify-between rounded-lg border px-4 py-3 text-sm font-medium transition-colors",
+        "flex items-center justify-between rounded-md border px-3 py-1.5 text-sm font-medium transition-colors",
         active
           ? "border-primary bg-primary/5 text-primary"
           : "border-border bg-card text-muted-foreground hover:border-primary/40",

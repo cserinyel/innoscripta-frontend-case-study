@@ -11,11 +11,13 @@ const STORAGE_KEY = "newshub_preferences";
 export interface PreferencesState {
   selectedCategories: Category[];
   selectedSources: Source[];
+  excludedWriters: string[];
 }
 
 const defaultState: PreferencesState = {
   selectedCategories: [...CATEGORIES],
   selectedSources: [...SOURCES],
+  excludedWriters: [],
 };
 
 const loadFromStorage = (): PreferencesState => {
@@ -40,6 +42,11 @@ const loadFromStorage = (): PreferencesState => {
         )
           ? parsed.selectedSources
           : [...SOURCES],
+      excludedWriters:
+        Array.isArray(parsed.excludedWriters) &&
+        parsed.excludedWriters.every((w) => typeof w === "string")
+          ? parsed.excludedWriters
+          : [],
     };
   } catch {
     return defaultState;
@@ -83,17 +90,42 @@ const preferencesSlice = createSlice({
       state.selectedSources = action.payload;
       saveToStorage(state);
     },
+
+    addExcludedWriter(state, action: PayloadAction<string>) {
+      if (!state.excludedWriters.includes(action.payload)) {
+        state.excludedWriters.push(action.payload);
+        saveToStorage(state);
+      }
+    },
+
+    removeExcludedWriter(state, action: PayloadAction<string>) {
+      const idx = state.excludedWriters.indexOf(action.payload);
+      if (idx !== -1) {
+        state.excludedWriters.splice(idx, 1);
+        saveToStorage(state);
+      }
+    },
   },
   selectors: {
     selectSelectedCategories: (state) => state.selectedCategories,
     selectSelectedSources: (state) => state.selectedSources,
+    selectExcludedWriters: (state) => state.excludedWriters,
   },
 });
 
-export const { toggleCategory, toggleSource, setCategories, setSources } =
-  preferencesSlice.actions;
+export const {
+  toggleCategory,
+  toggleSource,
+  setCategories,
+  setSources,
+  addExcludedWriter,
+  removeExcludedWriter,
+} = preferencesSlice.actions;
 
-export const { selectSelectedCategories, selectSelectedSources } =
-  preferencesSlice.selectors;
+export const {
+  selectSelectedCategories,
+  selectSelectedSources,
+  selectExcludedWriters,
+} = preferencesSlice.selectors;
 
 export default preferencesSlice.reducer;
