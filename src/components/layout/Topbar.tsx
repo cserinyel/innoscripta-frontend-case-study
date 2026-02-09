@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import PreferencesPanel from "@/features/preferences/components/PreferencesPanel";
 import { Moon, Sun, Settings } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectTheme,
+  toggleTheme,
+} from "@/features/preferences/store/preferencesSlice";
 
 const Topbar = (): React.ReactElement => {
-  const [dark, setDark] = useState(() =>
-    document.documentElement.classList.contains("dark"),
-  );
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
+  const dispatch = useDispatch();
+  const theme = useSelector(selectTheme);
 
   return (
     <header className="bg-background/80 backdrop-blur sticky top-0 z-50 flex items-center justify-between border-b px-6 py-3">
@@ -28,10 +27,14 @@ const Topbar = (): React.ReactElement => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setDark((d) => !d)}
+          onClick={() => dispatch(toggleTheme())}
           aria-label="Toggle theme"
         >
-          {dark ? <Sun className="size-5" /> : <Moon className="size-5" />}
+          {theme === "dark" ? (
+            <Sun className="size-5" />
+          ) : (
+            <Moon className="size-5" />
+          )}
         </Button>
       </div>
     </header>

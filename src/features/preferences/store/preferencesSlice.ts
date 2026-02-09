@@ -8,26 +8,37 @@ import {
 
 const STORAGE_KEY = "newshub_preferences";
 
+export type Theme = "light" | "dark";
+
 export interface PreferencesState {
   selectedCategories: Category[];
   selectedSources: Source[];
   excludedWriters: string[];
+  theme: Theme;
 }
 
 const defaultState: PreferencesState = {
   selectedCategories: [...CATEGORIES],
   selectedSources: [...SOURCES],
   excludedWriters: [],
+  theme: "light",
+};
+
+const applyThemeClass = (theme: Theme): void => {
+  document.documentElement.classList.toggle("dark", theme === "dark");
 };
 
 const loadFromStorage = (): PreferencesState => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultState;
+    if (!raw) {
+      applyThemeClass(defaultState.theme);
+      return defaultState;
+    }
 
     const parsed = JSON.parse(raw) as Partial<PreferencesState>;
 
-    return {
+    const state: PreferencesState = {
       selectedCategories:
         Array.isArray(parsed.selectedCategories) &&
         parsed.selectedCategories.every((c) =>
@@ -47,8 +58,16 @@ const loadFromStorage = (): PreferencesState => {
         parsed.excludedWriters.every((w) => typeof w === "string")
           ? parsed.excludedWriters
           : [],
+      theme:
+        parsed.theme === "light" || parsed.theme === "dark"
+          ? parsed.theme
+          : "light",
     };
+
+    applyThemeClass(state.theme);
+    return state;
   } catch {
+    applyThemeClass(defaultState.theme);
     return defaultState;
   }
 }
@@ -105,11 +124,18 @@ const preferencesSlice = createSlice({
         saveToStorage(state);
       }
     },
+
+    toggleTheme(state) {
+      state.theme = state.theme === "dark" ? "light" : "dark";
+      applyThemeClass(state.theme);
+      saveToStorage(state);
+    },
   },
   selectors: {
     selectSelectedCategories: (state) => state.selectedCategories,
     selectSelectedSources: (state) => state.selectedSources,
     selectExcludedWriters: (state) => state.excludedWriters,
+    selectTheme: (state) => state.theme,
   },
 });
 
@@ -120,12 +146,14 @@ export const {
   setSources,
   addExcludedWriter,
   removeExcludedWriter,
+  toggleTheme,
 } = preferencesSlice.actions;
 
 export const {
   selectSelectedCategories,
   selectSelectedSources,
   selectExcludedWriters,
+  selectTheme,
 } = preferencesSlice.selectors;
 
 export default preferencesSlice.reducer;
