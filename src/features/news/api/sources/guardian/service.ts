@@ -60,7 +60,7 @@ const guardianService: SourceService = {
     }
 
     const articles = normalizeGuardianResponse(
-      response.data.response.results,
+      response.data.response.results ?? [],
       params.category,
     );
 

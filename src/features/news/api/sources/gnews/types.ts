@@ -19,5 +19,5 @@ export interface GnewsArticleDto {
 
 export interface GnewsResponseDto {
   totalArticles: number;
-  articles: GnewsArticleDto[];
+  articles: GnewsArticleDto[] | null;
 }

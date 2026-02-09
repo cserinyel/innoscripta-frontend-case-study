@@ -30,7 +30,7 @@ export interface GuardianResponseDto {
     currentPage: number;
     pages: number;
     orderBy?: string;
-    results: GuardianResultDto[];
+    results: GuardianResultDto[] | null;
     message?: string;
   };
 }

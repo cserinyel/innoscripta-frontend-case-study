@@ -1,5 +1,5 @@
 import axiosInstance from "../../lib/axiosInstance";
-import type { SearchParams, SourceService, SearchResult, ApiError } from "../../lib/types";
+import type { SearchParams, SourceService, SearchResult } from "../../lib/types";
 import type { GnewsResponseDto } from "./types";
 import { normalizeGnewsResponse } from "./normalizer";
 import { mapCategoryToGnews } from "./categories";
@@ -50,16 +50,8 @@ const gnewsService: SourceService = {
       { params: buildRequestParams(params) },
     );
 
-    if (!response.data.articles) {
-      const apiError: ApiError = {
-        message: "GNews API returned an unexpected response",
-        source: "GNews",
-      };
-      throw apiError;
-    }
-
     const articles = normalizeGnewsResponse(
-      response.data.articles,
+      response.data.articles ?? [],
       params.category,
     );
 
