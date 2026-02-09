@@ -52,10 +52,7 @@ export const useNewsSearch = () => {
       }
       if (result.isError && result.error) {
         allErrors.push({
-          message:
-            result.error instanceof Error
-              ? result.error.message
-              : "Unknown error",
+          message: getErrorMessage(result.error),
           source: activeSources[index]?.name,
         });
       }

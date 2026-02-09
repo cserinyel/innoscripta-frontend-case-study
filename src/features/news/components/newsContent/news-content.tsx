@@ -1,4 +1,5 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { toast } from "sonner";
 import SearchInput from "@/components/shared/searchInput/search-input";
 import FilterBar from "@/components/layout/FilterBar";
 import NewsCard from "@/features/news/components/newsCard/news-card";
@@ -19,9 +20,8 @@ const NewsContent = (): React.ReactElement => {
 
   const {
     articles,
+    sourceErrors,
     isLoading,
-    isError,
-    errorMessage,
     search,
     hasSearched,
     page,
@@ -48,13 +48,21 @@ const NewsContent = (): React.ReactElement => {
     [setPage],
   );
 
+  useEffect(() => {
+    sourceErrors.forEach((err) => {
+      toast.error(`${err.source ?? "Source"}: ${err.message}`, {
+        id: err.source,
+      });
+    });
+  }, [sourceErrors]);
+
   const renderContent = () => {
     if (isLoading) {
       return <LoadingSkeleton />;
     }
 
-    if (isError && errorMessage) {
-      return <ErrorState message={errorMessage} onRetry={handleSearch} />;
+    if (articles.length === 0 && sourceErrors.length > 0) {
+      return <ErrorState message={sourceErrors[0].message} onRetry={handleSearch} />;
     }
 
     if (articles.length === 0) {

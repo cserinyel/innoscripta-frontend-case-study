@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import fallbackImage from "@/assets/no-image.jpg";
 
 const NewsCard = ({
   title,
@@ -30,16 +31,17 @@ const NewsCard = ({
         size="sm"
         className="flex h-full flex-col transition-shadow group-hover:shadow-md"
       >
-        {imageUrl && (
-          <div className="overflow-hidden rounded-t-lg">
-            <img
-              src={imageUrl}
-              alt={title}
-              className="h-40 w-full object-cover transition-transform group-hover:scale-105"
-              loading="lazy"
-            />
-          </div>
-        )}
+        <div className="overflow-hidden rounded-t-lg">
+          <img
+            src={imageUrl ?? fallbackImage}
+            alt={title}
+            className="h-40 w-full object-cover transition-transform group-hover:scale-105"
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.src = fallbackImage;
+            }}
+          />
+        </div>
         <CardHeader>
           <CardTitle className="line-clamp-2">{title}</CardTitle>
           <span className="text-muted-foreground text-xs">

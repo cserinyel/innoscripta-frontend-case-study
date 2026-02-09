@@ -12,7 +12,7 @@ export const CATEGORIES = [
   "technology",
 ] as const;
 
-export const SOURCES = ["Guardian", "New York Times", "GNews"] as const;
+export const SOURCES = ["Guardian", "New York Times", "NewsAPI"] as const;
 
 export type Category = (typeof CATEGORIES)[number];
 export type Source = (typeof SOURCES)[number];
