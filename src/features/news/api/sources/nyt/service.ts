@@ -4,11 +4,10 @@ import type { SearchParams, SourceService, SearchResult, ApiError } from "../../
 import type { NytResponseDto } from "./types";
 import { normalizeNytResponse } from "./normalizer";
 import { mapCategoryToNytFilter } from "./categories";
+import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/constants";
 
 const API_KEY = import.meta.env.VITE_NYT_API_KEY as string;
 const BASE_URL = import.meta.env.VITE_NYT_BASE_URL as string;
-
-const NYT_PAGE_SIZE = 10;
 
 /**
  * Converts an ISO date string ("2026-02-04") to YYYYMMDD format ("20260204").
@@ -76,8 +75,8 @@ const nytService: SourceService = {
     return {
       articles,
       meta: {
-        totalResults: response.data.response.metadata.hits,
-        pageSize: NYT_PAGE_SIZE,
+        totalResults: Math.min(response.data.response.metadata.hits, MAX_PAGINATABLE_ARTICLES),
+        pageSize: DEFAULT_PAGE_SIZE,
       },
     };
   },

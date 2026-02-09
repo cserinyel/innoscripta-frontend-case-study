@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import SearchInput from "@/components/shared/searchInput/search-input";
 import FilterBar from "@/components/layout/FilterBar";
 import NewsCard from "@/features/news/components/newsCard/news-card";
 import LoadingSkeleton from "@/components/shared/loadingSkeleton/loading-skeleton";
 import ErrorState from "@/components/shared/errorState/error-state";
 import EmptyState from "@/components/shared/emptyState/empty-state";
+import ArticlePagination from "@/components/shared/pagination/pagination";
 import { useNewsSearch } from "@/features/news/api/hooks/useNewsSearch";
 import type { SearchParams } from "@/features/news/api/lib/types";
-
-const ARTICLE_GRID = "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3";
 
 const NewsContent = (): React.ReactElement => {
   const [keyword, setKeyword] = useState("");
@@ -16,8 +15,19 @@ const NewsContent = (): React.ReactElement => {
   const [activeCategory, setActiveCategory] = useState("");
   const [date, setDate] = useState("");
 
-  const { articles, isLoading, isError, errorMessage, search, hasSearched } =
-    useNewsSearch();
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const {
+    articles,
+    isLoading,
+    isError,
+    errorMessage,
+    search,
+    hasSearched,
+    page,
+    totalPages,
+    setPage,
+  } = useNewsSearch();
 
   const handleSearch = () => {
     const params: SearchParams = {
@@ -29,6 +39,14 @@ const NewsContent = (): React.ReactElement => {
 
     search(params);
   };
+
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      setPage(newPage);
+      contentRef.current?.scrollIntoView({ behavior: "smooth" });
+    },
+    [setPage],
+  );
 
   const renderContent = () => {
     if (isLoading) {
@@ -44,16 +62,23 @@ const NewsContent = (): React.ReactElement => {
     }
 
     return (
-      <div className={ARTICLE_GRID}>
-        {articles.map((article) => (
-          <NewsCard key={article.id} {...article} />
-        ))}
-      </div>
+      <>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {articles.map((article) => (
+            <NewsCard key={article.id} {...article} />
+          ))}
+        </div>
+        <ArticlePagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </>
     );
   };
 
   return (
-    <>
+    <div ref={contentRef}>
       <SearchInput
         value={keyword}
         onChange={setKeyword}
@@ -69,7 +94,7 @@ const NewsContent = (): React.ReactElement => {
         onDateChange={setDate}
       />
       {renderContent()}
-    </>
+    </div>
   );
 };
 

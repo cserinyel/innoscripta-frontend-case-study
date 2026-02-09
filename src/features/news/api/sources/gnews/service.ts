@@ -3,7 +3,7 @@ import type { SearchParams, SourceService, SearchResult } from "../../lib/types"
 import type { GnewsResponseDto } from "./types";
 import { normalizeGnewsResponse } from "./normalizer";
 import { mapCategoryToGnews } from "./categories";
-import { DEFAULT_PAGE_SIZE } from "@/constants";
+import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/constants";
 
 const API_KEY = import.meta.env.VITE_GNEWS_API_KEY as string;
 const BASE_URL = import.meta.env.VITE_GNEWS_BASE_URL as string;
@@ -58,7 +58,7 @@ const gnewsService: SourceService = {
     return {
       articles,
       meta: {
-        totalResults: response.data.totalArticles,
+        totalResults: Math.min(response.data.totalArticles, MAX_PAGINATABLE_ARTICLES),
         pageSize,
       },
     };

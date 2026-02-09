@@ -3,7 +3,7 @@ import type { SearchParams, SourceService, SearchResult, ApiError } from "../../
 import type { GuardianResponseDto } from "./types";
 import { normalizeGuardianResponse } from "./normalizer";
 import { mapCategoryToGuardianSections } from "./categories";
-import { DEFAULT_PAGE_SIZE } from "@/constants";
+import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/constants";
 
 const API_KEY = import.meta.env.VITE_GUARDIAN_API_KEY as string;
 const BASE_URL = import.meta.env.VITE_GUARDIAN_BASE_URL as string;
@@ -67,7 +67,7 @@ const guardianService: SourceService = {
     return {
       articles,
       meta: {
-        totalResults: response.data.response.total,
+        totalResults: Math.min(response.data.response.total, MAX_PAGINATABLE_ARTICLES),
         pageSize,
       },
     };
