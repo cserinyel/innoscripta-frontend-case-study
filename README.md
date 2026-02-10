@@ -73,8 +73,6 @@ src/
 ├── app/                          # Redux store setup & typed hooks
 │   ├── store.ts                  # configureStore with preferences reducer
 │   └── hooks.ts                  # useAppDispatch / useAppSelector
-├── config/
-│   └── env.ts                    # Environment variable validation & typed exports
 ├── components/
 │   ├── layout/                   # Page-level layout components
 │   │   ├── Topbar.tsx            # App header, theme toggle, preferences button
@@ -445,10 +443,6 @@ UI primitives (Button, Dialog, Sheet, ScrollArea, Calendar, Popover, etc.) come 
 
 **Why:** shadcn/ui provides accessible, composable, unstyled (Radix-based) primitives that are copy-pasted into the project. This means zero runtime overhead from a component library, full control over styles, and no version-lock to a third-party package's release cycle.
 
-### Centralized Environment Configuration
-
-All `VITE_*` environment variables are validated and exported from a single `src/config/env.ts` module. The three source services import their keys from `env.guardian`, `env.nyt`, and `env.newsapi` rather than reading `import.meta.env` directly.
-
 **Why:** If a required variable is missing, the app fails fast at startup with a clear error message listing exactly which variables are missing, rather than silently producing `undefined` API keys that cause cryptic 401 errors at runtime. The typed exports also provide IDE autocomplete.
 
 ---
@@ -461,7 +455,7 @@ All `VITE_*` environment variables are validated and exported from a single `src
    - `categories.ts` -- a function that maps the app's `CategoryType` to the source's own section/desk identifiers.
    - `normalizer.ts` -- a function that converts the DTO array into `NewsArticle[]`.
    - `service.ts` -- implements `SourceService` (`name`, `search`, `getFetchKey`).
-3. Add the source's env vars to `src/config/env.ts` and `.env.example`.
+3. Add the source's env vars to `.env`.
 4. Import and register the service in `src/features/news/api/newsAggregator.ts`:
    ```typescript
    import myService from "./sources/<name>/service";

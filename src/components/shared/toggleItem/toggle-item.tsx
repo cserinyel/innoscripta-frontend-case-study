@@ -5,10 +5,12 @@ const ToggleItem = ({
   label,
   active,
   onToggle,
+  disabled,
 }: {
   label: string;
   active: boolean;
   onToggle: () => void;
+  disabled?: boolean;
 }): React.ReactElement => {
   return (
     <button
@@ -19,6 +21,7 @@ const ToggleItem = ({
         active
           ? "border-primary bg-primary/5 text-primary"
           : "border-border bg-card text-muted-foreground hover:border-primary/40",
+        disabled && "opacity-50 cursor-not-allowed",
       )}
     >
       <span className="capitalize">{label}</span>

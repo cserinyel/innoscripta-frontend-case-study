@@ -25,12 +25,32 @@ import { ChevronDown, Trash2 } from "lucide-react";
 import ToggleItem from "@/components/shared/toggleItem/toggle-item";
 import AddWriterDialog from "@/features/preferences/components/addWriterDialog/add-writer-dialog";
 import ExcludedWritersList from "@/features/preferences/components/excludedWritersList/excluded-writers-list";
+import { toast } from "sonner";
 
 const PreferencesPanel = (): React.ReactElement => {
   const dispatch = useAppDispatch();
   const selectedCategories = useAppSelector(selectSelectedCategories);
   const selectedSources = useAppSelector(selectSelectedSources);
   const [writerDialogOpen, setWriterDialogOpen] = useState(false);
+
+  const handleToggleSource = (source: Source) => {
+    if (selectedSources.length === 1 && selectedSources.includes(source)) {
+      toast.error("You must select at least one source.");
+      return;
+    }
+    dispatch(toggleSource(source));
+  };
+
+  const handleToggleCategory = (category: Category) => {
+    if (
+      selectedCategories.length === 1 &&
+      selectedCategories.includes(category)
+    ) {
+      toast.error("You must select at least one category.");
+      return;
+    }
+    dispatch(toggleCategory(category));
+  };
 
   return (
     <SheetContent side="right" className="overflow-hidden">
@@ -56,7 +76,11 @@ const PreferencesPanel = (): React.ReactElement => {
                   key={category}
                   label={category}
                   active={selectedCategories.includes(category)}
-                  onToggle={() => dispatch(toggleCategory(category))}
+                  onToggle={() => handleToggleCategory(category)}
+                  disabled={
+                    selectedCategories.length === 1 &&
+                    selectedCategories.includes(category)
+                  }
                 />
               ))}
             </div>
@@ -77,7 +101,11 @@ const PreferencesPanel = (): React.ReactElement => {
                   key={source}
                   label={SOURCE_NAMES[source]}
                   active={selectedSources.includes(source)}
-                  onToggle={() => dispatch(toggleSource(source))}
+                  onToggle={() => handleToggleSource(source)}
+                  disabled={
+                    selectedSources.length === 1 &&
+                    selectedSources.includes(source)
+                  }
                 />
               ))}
             </div>
