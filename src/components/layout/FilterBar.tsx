@@ -7,12 +7,13 @@ import SingleSelectCombobox from "../shared/singleSelectCombobox/single-select-c
 import MultiSelectCombobox from "../shared/multiSelectCombobox/multi-select-combobox";
 import DatePicker from "../shared/datePicker/date-picker";
 import { CATEGORY_NAMES, SOURCE_NAMES } from "@/features/news/constants";
+import type { CategoryType, SourceType } from "@/features/news/types";
 
 interface FilterBarProps {
-  activeSources: string[];
-  onSourcesChange: (sources: string[]) => void;
-  activeCategory: string;
-  onCategoryChange: (category: string) => void;
+  activeSources: SourceType[];
+  onSourcesChange: (sources: SourceType[]) => void;
+  activeCategory: CategoryType | "";
+  onCategoryChange: (category: CategoryType) => void;
   dateFrom: string;
   dateTo: string;
   onDateChange: (from: string, to: string) => void;
@@ -43,7 +44,7 @@ const FilterBar = ({
         label="Source"
         items={preferredSources}
         value={activeSources}
-        onValueChange={onSourcesChange}
+        onValueChange={(sources) => onSourcesChange(sources as SourceType[])}
         className="w-full md:w-36 md:flex-1 md:max-w-48"
         nameMap={SOURCE_NAMES}
       />
@@ -51,7 +52,7 @@ const FilterBar = ({
         label="Category"
         items={preferredCategories}
         value={activeCategory}
-        onValueChange={onCategoryChange}
+        onValueChange={(category) => onCategoryChange(category as CategoryType)}
         className="w-full md:w-36 md:flex-1 md:max-w-48"
         nameMap={CATEGORY_NAMES}
       />

@@ -1,3 +1,5 @@
+import type { CATEGORIES, SOURCES } from "../constants";
+
 export interface NewsArticle {
   id: string;
   title: string;
@@ -9,3 +11,6 @@ export interface NewsArticle {
   category: string;
   date: string;
 }
+
+export type SourceType = (typeof SOURCES)[number];
+export type CategoryType = (typeof CATEGORIES)[number];

@@ -3,6 +3,7 @@ import { generateArticleId } from "../../lib/utils";
 import type { GuardianResultDto } from "./types";
 import { getCategoryBySourceId } from "../../lib/utils";
 import { GUARDIAN_SOURCE_TO_CATEGORY_MAP } from "./categories";
+import { SOURCE_NAMES } from "@/features/news/constants";
 
 const normalizeGuardianArticle = (
   article: GuardianResultDto,
@@ -14,7 +15,7 @@ const normalizeGuardianArticle = (
   url: article.webUrl,
   imageUrl: article.fields?.thumbnail ?? null,
   author: article.fields?.byline ?? null,
-  source: "Guardian",
+  source: SOURCE_NAMES.guardian,
   category: category || getCategoryBySourceId(GUARDIAN_SOURCE_TO_CATEGORY_MAP, article.sectionId),
   date: article.webPublicationDate,
 });

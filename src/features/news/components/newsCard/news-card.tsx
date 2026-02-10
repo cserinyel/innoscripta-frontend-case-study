@@ -1,4 +1,4 @@
-import type { NewsArticle } from "@/features/news/types";
+
 import { formatDate } from "@/features/news/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,6 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import fallbackImage from "@/assets/no-image.jpg";
+import { CATEGORY_NAMES } from "../../constants";
+import type { NewsArticle } from "../../types";
 
 const NewsCard = ({
   title,
@@ -56,7 +58,11 @@ const NewsCard = ({
         </CardContent>
         <CardFooter className="gap-2">
           <Badge variant="outline">{source}</Badge>
-          {category && <Badge variant="secondary">{category}</Badge>}
+          {category && (
+            <Badge variant="secondary">
+              {CATEGORY_NAMES[category as keyof typeof CATEGORY_NAMES] ?? category}
+            </Badge>
+          )}
         </CardFooter>
       </Card>
     </a>

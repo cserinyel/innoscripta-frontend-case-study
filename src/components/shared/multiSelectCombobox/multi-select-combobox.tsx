@@ -8,9 +8,13 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 
-const getPlaceholder = (label: string, selected: string[]): string => {
+const getPlaceholder = (
+  label: string,
+  selected: string[],
+  nameMap?: Record<string, string>,
+): string => {
   if (selected.length === 0) return label;
-  if (selected.length === 1) return selected[0];
+  if (selected.length === 1) return nameMap?.[selected[0]] ?? selected[0];
   return `${selected.length} selected`;
 };
 
@@ -35,9 +39,10 @@ const MultiSelectCombobox = ({
       items={[...items]}
       value={value}
       onValueChange={onValueChange}
+      itemToStringLabel={(id) => nameMap?.[id] ?? id}
     >
       <ComboboxInput
-        placeholder={getPlaceholder(label, value)}
+        placeholder={getPlaceholder(label, value, nameMap)}
         showClear={value.length > 0}
         className={cn(
           value.length > 0 && "[&_input]:placeholder:text-foreground",

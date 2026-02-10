@@ -2,6 +2,7 @@ import type { NewsArticle } from "@/features/news/types";
 import { generateArticleId, getCategoryBySourceId } from "../../lib/utils";
 import type { NewsApiArticleDto } from "./types";
 import { NEWSAPI_SOURCE_TO_CATEGORY_MAP } from "./categories";
+import { SOURCE_NAMES } from "@/features/news/constants";
 
 const normalizeNewsApiArticle = (
   article: NewsApiArticleDto,
@@ -13,7 +14,7 @@ const normalizeNewsApiArticle = (
   url: article.url,
   imageUrl: article.urlToImage ?? null,
   author: article.author ?? null,
-  source: "NewsAPI",
+  source: SOURCE_NAMES.newsapi,
   category: category || getCategoryBySourceId(NEWSAPI_SOURCE_TO_CATEGORY_MAP, article.source.id),
   date: article.publishedAt,
 });

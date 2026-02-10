@@ -1,5 +1,6 @@
 import type { NewsArticle } from "@/features/news/types";
 import type { Category, Source } from "@/features/news/api/lib/types";
+import { SOURCE_NAMES } from "@/features/news/constants";
 
 interface ArticleFilterParams {
   excludedWriters: string[];
@@ -10,9 +11,13 @@ interface ArticleFilterParams {
 export const filterArticles = (
   articles: NewsArticle[],
   params: ArticleFilterParams,
-): NewsArticle[] =>
-  articles.filter((a) => {
-    if (!params.selectedSources.includes(a.source as never)) return false;
+): NewsArticle[] => {
+  const allowedSourceNames: Set<string> = new Set(
+    params.selectedSources.map((id) => SOURCE_NAMES[id]),
+  );
+
+  return articles.filter((a) => {
+    if (!allowedSourceNames.has(a.source)) return false;
     if (a.category && !params.selectedCategories.includes(a.category as never))
       return false;
     if (
@@ -26,3 +31,4 @@ export const filterArticles = (
       return false;
     return true;
   });
+};

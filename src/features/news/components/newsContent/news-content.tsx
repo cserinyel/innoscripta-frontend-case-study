@@ -8,14 +8,18 @@ import LoadingSkeleton from "@/components/shared/loadingSkeleton/loading-skeleto
 import ErrorState from "@/components/shared/errorState/error-state";
 import EmptyState from "@/components/shared/emptyState/empty-state";
 import ArticlePagination from "@/components/shared/pagination/pagination";
+import { useAppSelector } from "@/app/hooks";
+import { selectSelectedSources } from "@/features/preferences/store/preferencesSlice";
+import { SOURCE_NAMES } from "@/features/news/constants";
 import { useNewsSearch } from "@/features/news/api/hooks/useNewsSearch";
 import { useFilteredArticles } from "@/features/news/api/hooks/useFilteredArticles";
 import type { SearchParams } from "@/features/news/api/lib/types";
+import type { CategoryType, SourceType } from "../../types";
 
 const NewsContent = (): React.ReactElement => {
   const [keyword, setKeyword] = useState("");
-  const [activeSources, setActiveSources] = useState<string[]>([]);
-  const [activeCategory, setActiveCategory] = useState("");
+  const [activeSources, setActiveSources] = useState<SourceType[]>([]);
+  const [activeCategory, setActiveCategory] = useState<CategoryType | "">("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
@@ -32,12 +36,29 @@ const NewsContent = (): React.ReactElement => {
     setPage,
   } = useNewsSearch();
 
+  const preferredSources = useAppSelector(selectSelectedSources);
   const filteredArticles = useFilteredArticles(articles);
 
+  useEffect(() => {
+    search({
+      keyword: "",
+      sources: preferredSources.map((id) => SOURCE_NAMES[id]),
+      category: "",
+      dateFrom: "",
+      dateTo: "",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
   const handleSearch = () => {
+    const sourcesToQuery =
+      activeSources.length > 0
+        ? activeSources.filter((id) => preferredSources.includes(id))
+        : preferredSources;
+
     const params: SearchParams = {
       keyword,
-      sources: activeSources,
+      sources: sourcesToQuery.map((id) => SOURCE_NAMES[id]),
       category: activeCategory,
       dateFrom,
       dateTo,

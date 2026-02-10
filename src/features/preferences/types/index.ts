@@ -1,10 +1,10 @@
-import type { Category, Source } from "@/features/news/api/lib/types";
+import type { CategoryType, SourceType } from "@/features/news/types";
 
 export type Theme = "light" | "dark";
 
 export interface PreferencesState {
-  selectedCategories: Category[];
-  selectedSources: Source[];
+  selectedCategories: CategoryType[];
+  selectedSources: SourceType[];
   excludedWriters: string[];
   theme: Theme;
 }

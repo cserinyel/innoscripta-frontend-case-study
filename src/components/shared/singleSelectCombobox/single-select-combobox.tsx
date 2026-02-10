@@ -27,6 +27,7 @@ const SingleSelectCombobox = ({
       items={[...items]}
       value={value}
       onValueChange={(val) => onValueChange(val ?? "")}
+      itemToStringLabel={(id) => nameMap?.[id] ?? id}
     >
       <ComboboxInput
         placeholder={label}
