@@ -4,6 +4,7 @@ import type { GuardianResponseDto } from "./types";
 import { normalizeGuardianResponse } from "./normalizer";
 import { mapCategoryToGuardianSections } from "./categories";
 import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/constants";
+import { buildNewsFetchKey } from "../../lib/utils";
 
 const API_KEY = import.meta.env.VITE_GUARDIAN_API_KEY as string;
 const BASE_URL = import.meta.env.VITE_GUARDIAN_BASE_URL as string;
@@ -41,7 +42,7 @@ const buildRequestParams = (
 const guardianService: SourceService = {
   name: "Guardian",
 
-  getFetchKey: (params) => [params.keyword, params.category, params.date, params.page ?? 0],
+  getFetchKey: (params) => buildNewsFetchKey(params),
 
   search: async (params: SearchParams): Promise<SearchResult> => {
     const pageSize = params.pageSize ?? DEFAULT_PAGE_SIZE;

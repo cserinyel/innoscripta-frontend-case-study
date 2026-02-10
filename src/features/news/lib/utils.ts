@@ -1,10 +1,11 @@
-import { DateTime } from "luxon";
+
+import { format, isDate } from "date-fns";
 
 /**
  * Formats an ISO date string into a human-readable format.
  * Uses Luxon to parse in UTC and format without timezone-induced day shifts.
  */
-export const formatDate = (isoDate: string): string => {
-  const dt = DateTime.fromISO(isoDate, { zone: "utc" });
-  return dt.isValid ? dt.toFormat("MMM d, yyyy") : isoDate;
+export const formatDate = (date: string): string => {
+  const isoDate = isDate(new Date(date));
+  return isoDate ? format(date, "MMM d, yyyy") : date;
 };

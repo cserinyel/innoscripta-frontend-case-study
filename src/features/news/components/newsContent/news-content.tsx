@@ -103,13 +103,16 @@ const NewsContent = (): React.ReactElement => {
     }
 
     if (filteredArticles.length === 0) {
-      return <EmptyState hasSearched={hasSearched} />;
-    }
-
-    if (filteredArticles.length === 0 && sourceErrors.length > 0) {
-      return (
-        <ErrorState message={sourceErrors[0].message} onRetry={handleSearch} />
-      );
+      if (sourceErrors.length > 0) {
+        return (
+          <ErrorState
+            message={sourceErrors[0].message}
+            onRetry={handleSearch}
+          />
+        );
+      } else {
+        return <EmptyState hasSearched={hasSearched} />;
+      }
     }
 
     return (

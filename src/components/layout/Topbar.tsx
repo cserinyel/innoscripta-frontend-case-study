@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import PreferencesPanel from "@/features/preferences/components/PreferencesPanel";
 import { Moon, Sun, Settings } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import {
   selectTheme,
   toggleTheme,
 } from "@/features/preferences/store/preferencesSlice";
 
 const Topbar = (): React.ReactElement => {
-  const dispatch = useDispatch();
-  const theme = useSelector(selectTheme);
+  const dispatch = useAppDispatch();
+  const theme = useAppSelector(selectTheme);
 
   return (
     <header className="bg-background/80 backdrop-blur sticky top-0 z-50 flex items-center justify-between border-b px-6 py-3">

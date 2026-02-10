@@ -5,21 +5,15 @@ import type { NytResponseDto } from "./types";
 import { normalizeNytResponse } from "./normalizer";
 import { mapCategoryToNytFilter } from "./categories";
 import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/constants";
+import { buildNewsFetchKey } from "../../lib/utils";
 
 const API_KEY = import.meta.env.VITE_NYT_API_KEY as string;
 const BASE_URL = import.meta.env.VITE_NYT_BASE_URL as string;
 
-/**
- * Converts an ISO date string ("2026-02-04") to YYYYMMDD format ("20260204").
- */
-const toNytDate = (isoDate: string): string => isoDate.replaceAll("-", "");
-
-/**
- * Returns the next day in YYYYMMDD format for the end_date parameter.
- */
-const toNytNextDate = (isoDate: string): string => {
-  const nextDay = addDays(new Date(isoDate), 1);
-  return format(nextDay, "yyyyMMdd");
+const getDateRange = (date: string): { beginDate: string, endDate: string } => {
+  const beginDate = date.replaceAll("-", ""); //Converts an ISO date string ("2026-02-04") to YYYYMMDD format ("20260204").
+  const endDate = format(addDays(new Date(date), 1), "yyyyMMdd"); //Next day in YYYYMMDD format for the end_date parameter.
+  return { beginDate, endDate };
 };
 
 const buildRequestParams = (
@@ -41,17 +35,18 @@ const buildRequestParams = (
   }
 
   if (params.date) {
-    requestParams.begin_date = toNytDate(params.date);
-    requestParams.end_date = toNytNextDate(params.date);
+    const { beginDate, endDate } = getDateRange(params.date);
+    requestParams.begin_date = beginDate;
+    requestParams.end_date = endDate;
   }
 
   return requestParams;
 };
 
 const nytService: SourceService = {
-  name: "New York Times",
+      name: "New York Times",
 
-  getFetchKey: (params) => [params.keyword, params.category, params.date, params.page ?? 0],
+  getFetchKey: (params) => buildNewsFetchKey(params),
 
   search: async (params: SearchParams): Promise<SearchResult> => {
     const response = await axiosInstance.get<NytResponseDto>(

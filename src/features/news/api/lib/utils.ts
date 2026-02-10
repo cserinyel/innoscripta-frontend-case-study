@@ -1,4 +1,4 @@
-import type { ApiError } from "./types";
+import type { ApiError, SearchParams } from "./types";
 
 /**
  * Generates a deterministic ID from a string input using a simple hash.
@@ -41,4 +41,8 @@ export const getErrorMessage = (error: unknown): string => {
   }
 
   return "An unexpected error occurred";
+};
+
+export const buildNewsFetchKey = (params: SearchParams) => {
+  return [params.keyword, params.category, params.date, params.page ?? 0];
 };
