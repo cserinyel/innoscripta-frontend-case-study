@@ -3,13 +3,13 @@ import {
   selectSelectedCategories,
   selectSelectedSources,
 } from "@/features/preferences/store/preferencesSlice";
-import SingleSelectCombobox from "../shared/singleSelectCombobox/single-select-combobox";
-import MultiSelectCombobox from "../shared/multiSelectCombobox/multi-select-combobox";
-import DatePicker from "../shared/datePicker/date-picker";
+import SingleSelectCombobox from "../../../../components/shared/singleSelectCombobox/single-select-combobox";
+import MultiSelectCombobox from "../../../../components/shared/multiSelectCombobox/multi-select-combobox";
+import DatePicker from "../../../../components/shared/datePicker/date-picker";
 import { CATEGORY_NAMES, SOURCE_NAMES } from "@/features/news/constants";
 import type { CategoryType, SourceType } from "@/features/news/types";
 
-interface FilterBarProps {
+interface NewsFilterBarProps {
   activeSources: SourceType[];
   onSourcesChange: (sources: SourceType[]) => void;
   activeCategory: CategoryType | "";
@@ -19,7 +19,7 @@ interface FilterBarProps {
   onDateChange: (from: string, to: string) => void;
 }
 
-const FilterBar = ({
+const NewsFilterBar = ({
   activeSources,
   onSourcesChange,
   activeCategory,
@@ -27,7 +27,7 @@ const FilterBar = ({
   dateFrom,
   dateTo,
   onDateChange,
-}: FilterBarProps): React.ReactElement => {
+}: NewsFilterBarProps): React.ReactElement => {
   const preferredSources = useAppSelector(selectSelectedSources);
   const preferredCategories = useAppSelector(selectSelectedCategories);
 
@@ -60,4 +60,4 @@ const FilterBar = ({
   );
 };
 
-export default FilterBar;
+export default NewsFilterBar;

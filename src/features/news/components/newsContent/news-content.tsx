@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import SearchInput from "@/components/shared/searchInput/search-input";
-import FilterBar from "@/components/layout/FilterBar";
+import NewsFilterBar from "@/features/news/components/newsFilterBar/NewsFilterBar";
 import NewsCard from "@/features/news/components/newsCard/news-card";
 import LoadingSkeleton from "@/components/shared/loadingSkeleton/loading-skeleton";
 import ErrorState from "@/components/shared/errorState/error-state";
@@ -141,7 +141,7 @@ const NewsContent = (): React.ReactElement => {
           onChange={setKeyword}
           onSearch={handleSearch}
         />
-        <FilterBar
+        <NewsFilterBar
           activeSources={activeSources}
           onSourcesChange={setActiveSources}
           activeCategory={activeCategory}
