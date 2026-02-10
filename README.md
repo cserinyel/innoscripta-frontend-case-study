@@ -30,6 +30,7 @@ A modern news aggregator that pulls articles from multiple sources into a single
   - [Using Docker Compose (recommended)](#using-docker-compose-recommended)
   - [Using Docker Directly](#using-docker-directly)
 - [Scripts](#scripts)
+- [Testing](#testing)
 
 ---
 
@@ -565,3 +566,28 @@ docker run -p 3000:80 newshub
 | `pnpm build` | Type-check with `tsc` and build for production |
 | `pnpm preview` | Serve the production build locally |
 | `pnpm lint` | Run ESLint across the project |
+| `pnpm test` | Run Vitest in watch mode |
+| `pnpm test:run` | Run Vitest once (e.g. for CI) |
+
+---
+
+## Testing
+
+Tests use **Vitest** with **jsdom** and **React Testing Library**. The `@/` path alias is shared with the app, and `src/test/setup.ts` imports `@testing-library/jest-dom` so matchers like `toBeInTheDocument` are available.
+
+**Run tests**
+
+- `pnpm test` — watch mode; re-runs on file changes.
+- `pnpm test:run` — single run (useful for CI or pre-commit).
+
+**What’s covered**
+
+- **Unit tests** (colocated with source):
+  - **News filters** (`src/features/news/lib/filters.test.ts`) — `filterArticles` by source, category, and excluded writers (word-boundary matching).
+  - **Preferences slice** (`src/features/preferences/store/preferencesSlice.test.ts`) — reducers (toggle category/source, add/remove excluded writer, clear, theme) and `loadFromStorage` (valid/invalid JSON, invalid enums fallback to defaults).
+  - **News API utils** (`src/features/news/api/lib/utils.test.ts`) — `generateArticleId`, `isApiError`, `getErrorMessage`, `getSourceToCategoryMap`, `getCategoryBySourceId`.
+  - **Preferences storage** (`src/features/preferences/lib/utils.test.ts`) — `savePreferencesToStorage` writes the correct key and JSON to `localStorage`.
+  - **Guardian normalizer** (`src/features/news/api/sources/guardian/normalizer.test.ts`) — mapping Guardian API DTOs to `NewsArticle` (id, title, source, category, optional fields).
+- **Component test** (`src/components/shared/toggleItem/toggle-item.test.tsx`) — `ToggleItem` renders label/button and calls `onToggle` on click.
+
+Test files use the `.test.ts` / `.test.tsx` naming convention and sit next to the modules they cover.
