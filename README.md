@@ -1,6 +1,7 @@
-# NewsHub
+# NewsHub - Innoscripta Frontend Developer Case Study
 
 A modern news aggregator that pulls articles from multiple sources into a single, filterable interface. Built with React 19, TypeScript, and Vite.
+Created for the Innoscripta Frontend Developer Case Study. It is a modern news aggregator that pulls articles from multiple sources into a single, filterable interface. Built with React 19, TypeScript, and Vite.
 
 ---
 
@@ -50,18 +51,18 @@ A modern news aggregator that pulls articles from multiple sources into a single
 
 ## Tech Stack
 
-| Layer | Technology | Version |
-|---|---|---|
-| UI Framework | React | 19.2 |
-| Language | TypeScript | 5.9 |
-| Build Tool | Vite | 7.2 |
-| Styling | Tailwind CSS | 4.1 |
-| UI Primitives | shadcn/ui (Radix) | latest |
-| Client State | Redux Toolkit | 2.11 |
-| Server State | TanStack React Query | 5.90 |
-| HTTP Client | Axios | 1.13 |
-| Date Utilities | date-fns | 4.1 |
-| Package Manager | pnpm | latest |
+| Layer           | Technology           | Version |
+| --------------- | -------------------- | ------- |
+| UI Framework    | React                | 19.2    |
+| Language        | TypeScript           | 5.9     |
+| Build Tool      | Vite                 | 7.2     |
+| Styling         | Tailwind CSS         | 4.1     |
+| UI Primitives   | shadcn/ui (Radix)    | latest  |
+| Client State    | Redux Toolkit        | 2.11    |
+| Server State    | TanStack React Query | 5.90    |
+| HTTP Client     | Axios                | 1.13    |
+| Date Utilities  | date-fns             | 4.1     |
+| Package Manager | pnpm                 | latest  |
 
 ---
 
@@ -196,9 +197,9 @@ export const filterArticles = (
     if (
       a.author &&
       params.excludedWriters.some((w) =>
-        new RegExp(
-          `\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
-        ).test(a.author!),
+        new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(
+          a.author!,
+        ),
       )
     )
       return false;
@@ -210,9 +211,7 @@ export const filterArticles = (
 The `useFilteredArticles` hook in `src/features/news/api/hooks/useFilteredArticles.ts` reuses this function instead of duplicating the logic:
 
 ```ts
-export const useFilteredArticles = (
-  articles: NewsArticle[],
-): NewsArticle[] => {
+export const useFilteredArticles = (articles: NewsArticle[]): NewsArticle[] => {
   const excludedWriters = useAppSelector(selectExcludedWriters);
   const selectedSources = useAppSelector(selectSelectedSources);
   const selectedCategories = useAppSelector(selectSelectedCategories);
@@ -265,10 +264,7 @@ const renderContent = () => {
   if (filteredArticles.length === 0) {
     if (sourceErrors.length > 0) {
       return (
-        <ErrorState
-          message={sourceErrors[0].message}
-          onRetry={handleSearch}
-        />
+        <ErrorState message={sourceErrors[0].message} onRetry={handleSearch} />
       );
     } else {
       return <EmptyState hasSearched={hasSearched} />;
@@ -297,23 +293,27 @@ All data-fetching and filtering complexity lives in `useNewsSearch` and `useFilt
 - **Simple, declarative preferences UI** — `PreferencesPanel` in `src/features/preferences/components/PreferencesPanel.tsx` renders categories and sources by mapping over constant arrays. Toggling is a straightforward call to Redux actions:
 
 ```tsx
-{CATEGORIES.map((category: Category) => (
-  <ToggleItem
-    key={category}
-    label={category}
-    active={selectedCategories.includes(category)}
-    onToggle={() => dispatch(toggleCategory(category))}
-  />
-))}
+{
+  CATEGORIES.map((category: Category) => (
+    <ToggleItem
+      key={category}
+      label={category}
+      active={selectedCategories.includes(category)}
+      onToggle={() => dispatch(toggleCategory(category))}
+    />
+  ));
+}
 
-{SOURCES.map((source: Source) => (
-  <ToggleItem
-    key={source}
-    label={SOURCE_NAMES[source]}
-    active={selectedSources.includes(source)}
-    onToggle={() => dispatch(toggleSource(source))}
-  />
-))}
+{
+  SOURCES.map((source: Source) => (
+    <ToggleItem
+      key={source}
+      label={SOURCE_NAMES[source]}
+      active={selectedSources.includes(source)}
+      onToggle={() => dispatch(toggleSource(source))}
+    />
+  ));
+}
 ```
 
 No complex state machines or derived booleans live in the component; it simply reflects Redux state and dispatches minimal actions, keeping the UI logic easy to follow.
@@ -355,7 +355,7 @@ activeSources.map((source) => ({
   queryKey: [source.name, ...source.getFetchKey(paginatedParams)],
   queryFn: (): Promise<SearchResult> => source.search(paginatedParams),
   placeholderData: keepPreviousData,
-}))
+}));
 ```
 
 Guardian, NYT, and NewsAPI services are interchangeable in this loop. Adding or removing a source does not require changes to `useNewsSearch` or `NewsContent`.
@@ -461,7 +461,10 @@ UI primitives (Button, Dialog, Sheet, ScrollArea, Calendar, Popover, etc.) come 
    ```typescript
    import myService from "./sources/<name>/service";
    export const sourceRegistry: SourceService[] = [
-     guardianService, nytService, newsApiService, myService,
+     guardianService,
+     nytService,
+     newsApiService,
+     myService,
    ];
    ```
 5. Add the source identifier to `SOURCES` and `SOURCE_NAMES` in `src/features/news/constants/index.ts`.
@@ -472,14 +475,14 @@ No other files need to be modified.
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `VITE_GUARDIAN_API_KEY` | API key for [The Guardian Open Platform](https://open-platform.theguardian.com/) |
-| `VITE_GUARDIAN_BASE_URL` | Guardian API base URL (default: `https://content.guardianapis.com`) |
-| `VITE_NYT_API_KEY` | API key for [NYT Article Search API](https://developer.nytimes.com/) |
-| `VITE_NYT_BASE_URL` | NYT API base URL (default: `https://api.nytimes.com/svc/search/v2`) |
-| `VITE_NEWSAPI_API_KEY` | API key for [NewsAPI](https://newsapi.org/) |
-| `VITE_NEWSAPI_BASE_URL` | NewsAPI base URL (default: `https://newsapi.org/v2`) |
+| Variable                 | Description                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| `VITE_GUARDIAN_API_KEY`  | API key for [The Guardian Open Platform](https://open-platform.theguardian.com/) |
+| `VITE_GUARDIAN_BASE_URL` | Guardian API base URL (default: `https://content.guardianapis.com`)              |
+| `VITE_NYT_API_KEY`       | API key for [NYT Article Search API](https://developer.nytimes.com/)             |
+| `VITE_NYT_BASE_URL`      | NYT API base URL (default: `https://api.nytimes.com/svc/search/v2`)              |
+| `VITE_NEWSAPI_API_KEY`   | API key for [NewsAPI](https://newsapi.org/)                                      |
+| `VITE_NEWSAPI_BASE_URL`  | NewsAPI base URL (default: `https://newsapi.org/v2`)                             |
 
 All variables are **required**.
 
@@ -560,14 +563,14 @@ docker run -p 3000:80 newshub
 
 ## Scripts
 
-| Command | Description |
-|---|---|
-| `pnpm dev` | Start Vite dev server with HMR |
-| `pnpm build` | Type-check with `tsc` and build for production |
-| `pnpm preview` | Serve the production build locally |
-| `pnpm lint` | Run ESLint across the project |
-| `pnpm test` | Run Vitest in watch mode |
-| `pnpm test:run` | Run Vitest once (e.g. for CI) |
+| Command         | Description                                    |
+| --------------- | ---------------------------------------------- |
+| `pnpm dev`      | Start Vite dev server with HMR                 |
+| `pnpm build`    | Type-check with `tsc` and build for production |
+| `pnpm preview`  | Serve the production build locally             |
+| `pnpm lint`     | Run ESLint across the project                  |
+| `pnpm test`     | Run Vitest in watch mode                       |
+| `pnpm test:run` | Run Vitest once (e.g. for CI)                  |
 
 ---
 
