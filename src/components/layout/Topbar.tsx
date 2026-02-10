@@ -2,15 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import PreferencesPanel from "@/features/preferences/components/PreferencesPanel";
 import { Moon, Sun, Settings } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import {
-  selectTheme,
-  toggleTheme,
-} from "@/features/preferences/store/preferencesSlice";
+import { useTheme } from "@/features/preferences/hooks/useTheme";
 
 const Topbar = (): React.ReactElement => {
-  const dispatch = useAppDispatch();
-  const theme = useAppSelector(selectTheme);
+  const { theme, toggle } = useTheme();
 
   return (
     <header className="bg-background/80 backdrop-blur sticky top-0 z-50 flex items-center justify-between border-b px-6 py-3">
@@ -27,7 +22,7 @@ const Topbar = (): React.ReactElement => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => dispatch(toggleTheme())}
+          onClick={toggle}
           aria-label="Toggle theme"
         >
           {theme === "dark" ? (

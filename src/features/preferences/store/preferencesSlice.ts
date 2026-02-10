@@ -24,15 +24,10 @@ const defaultState: PreferencesState = {
   theme: "light",
 };
 
-const applyThemeClass = (theme: Theme): void => {
-  document.documentElement.classList.toggle("dark", theme === "dark");
-};
-
 const loadFromStorage = (): PreferencesState => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      applyThemeClass(defaultState.theme);
       return defaultState;
     }
 
@@ -64,10 +59,8 @@ const loadFromStorage = (): PreferencesState => {
           : "light",
     };
 
-    applyThemeClass(state.theme);
     return state;
   } catch {
-    applyThemeClass(defaultState.theme);
     return defaultState;
   }
 }
@@ -127,7 +120,6 @@ const preferencesSlice = createSlice({
 
     toggleTheme(state) {
       state.theme = state.theme === "dark" ? "light" : "dark";
-      applyThemeClass(state.theme);
       saveToStorage(state);
     },
   },
