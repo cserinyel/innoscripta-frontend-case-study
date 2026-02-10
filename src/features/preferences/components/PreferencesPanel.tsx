@@ -5,6 +5,7 @@ import {
   selectSelectedSources,
   toggleCategory,
   toggleSource,
+  clearPreferences,
 } from "@/features/preferences/store/preferencesSlice";
 import { CATEGORIES, SOURCE_NAMES, SOURCES } from "@/features/news/constants";
 import type { Category, Source } from "@/features/news/api/lib/types";
@@ -20,7 +21,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Trash2 } from "lucide-react";
 import ToggleItem from "@/components/shared/toggleItem/toggle-item";
 import AddWriterDialog from "@/features/preferences/components/addWriterDialog/add-writer-dialog";
 import ExcludedWritersList from "@/features/preferences/components/excludedWritersList/excluded-writers-list";
@@ -40,7 +41,7 @@ const PreferencesPanel = (): React.ReactElement => {
         </SheetDescription>
       </SheetHeader>
 
-      <div className="space-y-6 px-4 pb-6">
+      <div className="space-y-6 px-4 pb-6 flex-1">
         <Collapsible defaultOpen>
           <CollapsibleTrigger asChild>
             <button className="flex w-full items-center justify-between text-sm font-medium">
@@ -105,6 +106,16 @@ const PreferencesPanel = (): React.ReactElement => {
             />
           </CollapsibleContent>
         </Collapsible>
+      </div>
+      <div className="flex justify-end p-4">
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => dispatch(clearPreferences())}
+        >
+          <Trash2 className="size-3.5" />
+          Clear Preferences
+        </Button>
       </div>
     </SheetContent>
   );

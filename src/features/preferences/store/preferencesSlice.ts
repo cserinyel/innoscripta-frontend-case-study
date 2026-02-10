@@ -109,6 +109,16 @@ const preferencesSlice = createSlice({
       state.theme = state.theme === "dark" ? "light" : "dark";
       savePreferencesToStorage(state);
     },
+
+    clearPreferences(state) {
+      const newState: PreferencesState = {
+        ...defaultState,
+        theme: state.theme,
+      };
+
+      savePreferencesToStorage(newState);
+      return newState;
+    },
   },
   selectors: {
     selectSelectedCategories: (state) => state.selectedCategories,
@@ -126,6 +136,7 @@ export const {
   addExcludedWriter,
   removeExcludedWriter,
   toggleTheme,
+  clearPreferences,
 } = preferencesSlice.actions;
 
 export const {
