@@ -1,4 +1,6 @@
-const GUARDIAN_CATEGORY_MAP: Record<string, string[]> = {
+import { getSourceToCategoryMap } from "../../lib/utils";
+
+export const GUARDIAN_CATEGORY_MAP: Record<string, string[]> = {
   business: ["business", "business-to-business", "money", "small-business-network"],
   entertainment: ["culture", "film", "music", "stage", "tv-and-radio", "games", "artanddesign", "fashion"],
   general: ["news", "uk-news", "us-news", "australia-news", "world", "politics", "commentisfree"],
@@ -7,6 +9,12 @@ const GUARDIAN_CATEGORY_MAP: Record<string, string[]> = {
   sports: ["sport", "football"],
   technology: ["technology"],
 };
+
+/**
+ * Reverse lookup: source ID -> category.
+ * Built once from GUARDIAN_CATEGORY_MAP.
+ */
+export const GUARDIAN_SOURCE_TO_CATEGORY_MAP = getSourceToCategoryMap(GUARDIAN_CATEGORY_MAP);
 
 /**
  * Maps a generic app category to a pipe-delimited Guardian sections string.
@@ -20,3 +28,4 @@ export const mapCategoryToGuardianSections = (
   const sections = GUARDIAN_CATEGORY_MAP[category];
   return sections ? sections.join("|") : undefined;
 };
+

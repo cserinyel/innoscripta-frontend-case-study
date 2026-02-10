@@ -1,58 +1,57 @@
-import { useRef } from "react";
+import { cn } from "@/lib/utils";
 import {
   Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
   ComboboxContent,
   ComboboxEmpty,
+  ComboboxInput,
   ComboboxItem,
   ComboboxList,
-  ComboboxValue,
 } from "@/components/ui/combobox";
 
-const MAX_VISIBLE_CHIPS = 3;
+const getPlaceholder = (label: string, selected: string[]): string => {
+  if (selected.length === 0) return label;
+  if (selected.length === 1) return selected[0];
+  return `${selected.length} selected`;
+};
 
 const MultiSelectCombobox = ({
   label,
   items,
   value,
   onValueChange,
+  className,
+  nameMap,
 }: {
   label: string;
   items: readonly string[];
   value: string[];
   onValueChange: (value: string[]) => void;
+  className?: string;
+  nameMap?: Record<string, string>;
 }): React.ReactElement => {
-  const anchorRef = useRef<HTMLDivElement | null>(null);
-  const hasSelection = value.length > 0;
-  const isCollapsed = value.length > MAX_VISIBLE_CHIPS;
-
   return (
     <Combobox
-      items={[...items]}
       multiple
+      items={[...items]}
       value={value}
       onValueChange={onValueChange}
     >
-      <ComboboxChips ref={anchorRef} className="w-96">
-        <ComboboxValue>
-          {isCollapsed ? (
-            <span className="text-sm">
-              {value.length} {label.toLowerCase()} selected
-            </span>
-          ) : (
-            value.map((item) => <ComboboxChip key={item}>{item}</ComboboxChip>)
-          )}
-        </ComboboxValue>
-        <ComboboxChipsInput placeholder={hasSelection ? undefined : label} />
-      </ComboboxChips>
-      <ComboboxContent anchor={anchorRef}>
-        <ComboboxEmpty>No items found.</ComboboxEmpty>
+      <ComboboxInput
+        placeholder={getPlaceholder(label, value)}
+        showClear={value.length > 0}
+        className={cn(
+          value.length > 0 && "[&_input]:placeholder:text-foreground",
+          className,
+        )}
+      />
+      <ComboboxContent>
+        <ComboboxEmpty className="text-muted-foreground justify-start px-2">
+          No items found.
+        </ComboboxEmpty>
         <ComboboxList>
           {(item) => (
             <ComboboxItem key={item} value={item}>
-              {item}
+              {nameMap?.[item] ?? item}
             </ComboboxItem>
           )}
         </ComboboxList>

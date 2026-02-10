@@ -2,9 +2,8 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import {
   CATEGORIES,
   SOURCES,
-  type Category,
-  type Source,
-} from "@/constants";
+} from "@/features/news/constants";
+import type { Category, Source } from "@/features/news/api/lib/types";
 
 const STORAGE_KEY = "newshub_preferences";
 

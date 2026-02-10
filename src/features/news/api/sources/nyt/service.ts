@@ -1,20 +1,13 @@
-import { addDays, format } from "date-fns";
 import axiosInstance from "../../lib/axiosInstance";
 import type { SearchParams, SourceService, SearchResult, ApiError } from "../../lib/types";
 import type { NytResponseDto } from "./types";
 import { normalizeNytResponse } from "./normalizer";
 import { mapCategoryToNytFilter } from "./categories";
-import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/constants";
+import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/features/news/constants";
 import { buildNewsFetchKey } from "../../lib/utils";
 
 const API_KEY = import.meta.env.VITE_NYT_API_KEY as string;
 const BASE_URL = import.meta.env.VITE_NYT_BASE_URL as string;
-
-const getDateRange = (date: string): { beginDate: string, endDate: string } => {
-  const beginDate = date.replaceAll("-", ""); //Converts an ISO date string ("2026-02-04") to YYYYMMDD format ("20260204").
-  const endDate = format(addDays(new Date(date), 1), "yyyyMMdd"); //Next day in YYYYMMDD format for the end_date parameter.
-  return { beginDate, endDate };
-};
 
 const buildRequestParams = (
   params: SearchParams,
@@ -34,10 +27,11 @@ const buildRequestParams = (
     requestParams.fq = fq;
   }
 
-  if (params.date) {
-    const { beginDate, endDate } = getDateRange(params.date);
-    requestParams.begin_date = beginDate;
-    requestParams.end_date = endDate;
+  if (params.dateFrom) {
+    requestParams.begin_date = params.dateFrom.replaceAll("-", "");
+  }
+  if (params.dateTo) {
+    requestParams.end_date = params.dateTo.replaceAll("-", "");
   }
 
   return requestParams;

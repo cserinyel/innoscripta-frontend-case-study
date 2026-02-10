@@ -3,7 +3,7 @@ import type { SearchParams, SourceService, SearchResult, ApiError } from "../../
 import type { NewsApiResponseDto } from "./types";
 import { normalizeNewsApiResponse } from "./normalizer";
 import { mapCategoryToNewsApiSources, getAllNewsApiSources } from "./categories";
-import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/constants";
+import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/features/news/constants";
 import { buildNewsFetchKey } from "../../lib/utils";
 
 const API_KEY = import.meta.env.VITE_NEWSAPI_API_KEY as string;
@@ -32,9 +32,11 @@ const buildRequestParams = (
     requestParams.sources = getAllNewsApiSources();
   }
 
-  if (params.date) {
-    requestParams.from = `${params.date}T00:00:00Z`;
-    requestParams.to = `${params.date}T23:59:59Z`;
+  if (params.dateFrom) {
+    requestParams.from = `${params.dateFrom}T00:00:00Z`;
+  }
+  if (params.dateTo) {
+    requestParams.to = `${params.dateTo}T23:59:59Z`;
   }
 
   return requestParams;

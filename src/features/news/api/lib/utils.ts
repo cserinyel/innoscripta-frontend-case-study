@@ -44,5 +44,33 @@ export const getErrorMessage = (error: unknown): string => {
 };
 
 export const buildNewsFetchKey = (params: SearchParams) => {
-  return [params.keyword, params.category, params.date, params.page ?? 0];
+  return [
+    params.keyword,
+    params.category,
+    params.dateFrom,
+    params.dateTo,
+    params.page ?? 0,
+  ];
+};
+
+/**
+ * Reverse lookup: source ID -> category.
+ */
+export const getSourceToCategoryMap = (
+  sourcesMap: Record<string, string[]>,
+): Record<string, string> => {
+  return Object.entries(sourcesMap).reduce<Record<string, string>>(
+    (acc, [category, sources]) => {
+      sources.forEach((sourceId) => {
+        acc[sourceId] = category;
+      });
+      return acc;
+    },
+    {},
+  );
+};
+
+export const getCategoryBySourceId = (sourceToCategoryMap: Record<string, string>, sourceId: string | null): string => {
+  if(!sourceId) return "general"
+  return sourceToCategoryMap[sourceId] || "general";
 };

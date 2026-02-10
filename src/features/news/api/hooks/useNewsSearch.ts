@@ -11,8 +11,8 @@ export const useNewsSearch = () => {
 
   const activeSources = useMemo(() => {
     if (!searchParams) return [];
-    return searchParams.source
-      ? sourceRegistry.filter((s) => s.name === searchParams.source)
+    return searchParams.sources.length > 0
+      ? sourceRegistry.filter((s) => searchParams.sources.includes(s.name))
       : sourceRegistry;
   }, [searchParams]);
 

@@ -1,6 +1,8 @@
 import type { NewsArticle } from "@/features/news/types/news";
 import { generateArticleId } from "../../lib/utils";
 import type { GuardianResultDto } from "./types";
+import { getCategoryBySourceId } from "../../lib/utils";
+import { GUARDIAN_SOURCE_TO_CATEGORY_MAP } from "./categories";
 
 const normalizeGuardianArticle = (
   article: GuardianResultDto,
@@ -13,7 +15,7 @@ const normalizeGuardianArticle = (
   imageUrl: article.fields?.thumbnail ?? null,
   author: article.fields?.byline ?? null,
   source: "Guardian",
-  category,
+  category: category || getCategoryBySourceId(GUARDIAN_SOURCE_TO_CATEGORY_MAP, article.sectionId),
   date: article.webPublicationDate,
 });
 

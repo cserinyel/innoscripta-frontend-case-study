@@ -14,9 +14,10 @@ import type { SearchParams } from "@/features/news/api/lib/types";
 
 const NewsContent = (): React.ReactElement => {
   const [keyword, setKeyword] = useState("");
-  const [activeSource, setActiveSource] = useState("");
+  const [activeSources, setActiveSources] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState("");
-  const [date, setDate] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -36,12 +37,18 @@ const NewsContent = (): React.ReactElement => {
   const handleSearch = () => {
     const params: SearchParams = {
       keyword,
-      source: activeSource,
+      sources: activeSources,
       category: activeCategory,
-      date,
+      dateFrom,
+      dateTo,
     };
 
     search(params);
+  };
+
+  const handleDateChange = (from: string, to: string) => {
+    setDateFrom(from);
+    setDateTo(to);
   };
 
   const handlePageChange = useCallback(
@@ -114,12 +121,13 @@ const NewsContent = (): React.ReactElement => {
           onSearch={handleSearch}
         />
         <FilterBar
-          activeSource={activeSource}
-          onSourceChange={setActiveSource}
+          activeSources={activeSources}
+          onSourcesChange={setActiveSources}
           activeCategory={activeCategory}
           onCategoryChange={setActiveCategory}
-          date={date}
-          onDateChange={setDate}
+          dateFrom={dateFrom}
+          dateTo={dateTo}
+          onDateChange={handleDateChange}
         />
         <Button
           className="w-full md:w-auto"

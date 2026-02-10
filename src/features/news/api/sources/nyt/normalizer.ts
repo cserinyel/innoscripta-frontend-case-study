@@ -1,6 +1,11 @@
 import type { NewsArticle } from "@/features/news/types/news";
-import { generateArticleId } from "../../lib/utils";
+import { generateArticleId, getCategoryBySourceId } from "../../lib/utils";
 import type { NytDocDto } from "./types";
+import { NYT_SOURCE_TO_CATEGORY_MAP } from "./categories";
+
+const convertNytSectionNameToSourceId = (sectionName: string): string => {
+  return sectionName.toLowerCase().replace(/ /g, "-");
+};
 
 const normalizeNytArticle = (
   doc: NytDocDto,
@@ -13,7 +18,7 @@ const normalizeNytArticle = (
   imageUrl: doc.multimedia?.default?.url || null,
   author: doc.byline?.original ?? null,
   source: "New York Times",
-  category,
+  category: category || getCategoryBySourceId(NYT_SOURCE_TO_CATEGORY_MAP, convertNytSectionNameToSourceId(doc.section_name)),
   date: doc.pub_date,
 });
 

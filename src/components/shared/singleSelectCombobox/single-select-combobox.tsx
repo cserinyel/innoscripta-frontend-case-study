@@ -13,12 +13,14 @@ const SingleSelectCombobox = ({
   value,
   onValueChange,
   className,
+  nameMap,
 }: {
   label: string;
   items: readonly string[];
   value: string;
   onValueChange: (value: string) => void;
   className?: string;
+  nameMap?: Record<string, string>;
 }): React.ReactElement => {
   return (
     <Combobox
@@ -26,13 +28,17 @@ const SingleSelectCombobox = ({
       value={value}
       onValueChange={(val) => onValueChange(val ?? "")}
     >
-      <ComboboxInput placeholder={label} showClear={!!value} className={className} />
+      <ComboboxInput
+        placeholder={label}
+        showClear={!!value}
+        className={className}
+      />
       <ComboboxContent>
         <ComboboxEmpty>No items found.</ComboboxEmpty>
         <ComboboxList>
           {(item) => (
             <ComboboxItem key={item} value={item}>
-              {item}
+              {nameMap?.[item] ?? item}
             </ComboboxItem>
           )}
         </ComboboxList>

@@ -4,23 +4,27 @@ import {
   selectSelectedSources,
 } from "@/features/preferences/store/preferencesSlice";
 import SingleSelectCombobox from "../shared/singleSelectCombobox/single-select-combobox";
+import MultiSelectCombobox from "../shared/multiSelectCombobox/multi-select-combobox";
 import DatePicker from "../shared/datePicker/date-picker";
+import { CATEGORY_NAMES, SOURCE_NAMES } from "@/features/news/constants";
 
 interface FilterBarProps {
-  activeSource: string;
-  onSourceChange: (source: string) => void;
+  activeSources: string[];
+  onSourcesChange: (sources: string[]) => void;
   activeCategory: string;
   onCategoryChange: (category: string) => void;
-  date: string;
-  onDateChange: (date: string) => void;
+  dateFrom: string;
+  dateTo: string;
+  onDateChange: (from: string, to: string) => void;
 }
 
 const FilterBar = ({
-  activeSource,
-  onSourceChange,
+  activeSources,
+  onSourcesChange,
   activeCategory,
   onCategoryChange,
-  date,
+  dateFrom,
+  dateTo,
   onDateChange,
 }: FilterBarProps): React.ReactElement => {
   const preferredSources = useAppSelector(selectSelectedSources);
@@ -29,17 +33,19 @@ const FilterBar = ({
   return (
     <>
       <DatePicker
-        value={date}
+        from={dateFrom}
+        to={dateTo}
         onValueChange={onDateChange}
-        placeholder="Pick a date"
-        className="w-full md:w-48 md:flex-1"
+        placeholder="Pick a date range"
+        className="w-full md:w-64 md:flex-1"
       />
-      <SingleSelectCombobox
+      <MultiSelectCombobox
         label="Source"
         items={preferredSources}
-        value={activeSource}
-        onValueChange={onSourceChange}
+        value={activeSources}
+        onValueChange={onSourcesChange}
         className="w-full md:w-36 md:flex-1 md:max-w-48"
+        nameMap={SOURCE_NAMES}
       />
       <SingleSelectCombobox
         label="Category"
@@ -47,6 +53,7 @@ const FilterBar = ({
         value={activeCategory}
         onValueChange={onCategoryChange}
         className="w-full md:w-36 md:flex-1 md:max-w-48"
+        nameMap={CATEGORY_NAMES}
       />
     </>
   );

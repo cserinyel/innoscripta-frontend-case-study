@@ -6,7 +6,8 @@ import {
   toggleCategory,
   toggleSource,
 } from "@/features/preferences/store/preferencesSlice";
-import { CATEGORIES, SOURCES, type Category, type Source } from "@/constants";
+import { CATEGORIES, SOURCE_NAMES, SOURCES } from "@/features/news/constants";
+import type { Category, Source } from "@/features/news/api/lib/types";
 import {
   SheetContent,
   SheetDescription,
@@ -73,7 +74,7 @@ const PreferencesPanel = (): React.ReactElement => {
               {SOURCES.map((source: Source) => (
                 <ToggleItem
                   key={source}
-                  label={source}
+                  label={SOURCE_NAMES[source]}
                   active={selectedSources.includes(source)}
                   onToggle={() => dispatch(toggleSource(source))}
                 />

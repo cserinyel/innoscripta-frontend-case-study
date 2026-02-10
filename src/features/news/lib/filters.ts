@@ -1,5 +1,5 @@
 import type { NewsArticle } from "@/features/news/types/news";
-import type { Category, Source } from "@/constants";
+import type { Category, Source } from "@/features/news/api/lib/types";
 
 interface ArticleFilterParams {
   excludedWriters: string[];

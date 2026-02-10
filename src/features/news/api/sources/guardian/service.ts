@@ -3,7 +3,7 @@ import type { SearchParams, SourceService, SearchResult, ApiError } from "../../
 import type { GuardianResponseDto } from "./types";
 import { normalizeGuardianResponse } from "./normalizer";
 import { mapCategoryToGuardianSections } from "./categories";
-import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/constants";
+import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/features/news/constants";
 import { buildNewsFetchKey } from "../../lib/utils";
 
 const API_KEY = import.meta.env.VITE_GUARDIAN_API_KEY as string;
@@ -31,9 +31,11 @@ const buildRequestParams = (
     requestParams.section = sections;
   }
 
-  if (params.date) {
-    requestParams["from-date"] = params.date;
-    requestParams["to-date"] = params.date;
+  if (params.dateFrom) {
+    requestParams["from-date"] = params.dateFrom;
+  }
+  if (params.dateTo) {
+    requestParams["to-date"] = params.dateTo;
   }
 
   return requestParams;
