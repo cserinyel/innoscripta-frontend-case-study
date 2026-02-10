@@ -20,6 +20,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Trash2 } from "lucide-react";
 import ToggleItem from "@/components/shared/toggleItem/toggle-item";
@@ -53,89 +54,97 @@ const PreferencesPanel = (): React.ReactElement => {
   };
 
   return (
-    <SheetContent side="right" className="overflow-hidden">
-      <SheetHeader>
+    <SheetContent
+      side="right"
+      className="flex h-full max-h-full flex-col overflow-hidden p-0 gap-0"
+    >
+      <SheetHeader className="shrink-0">
         <SheetTitle>Preferences</SheetTitle>
         <SheetDescription>
           Choose the categories and sources you want to see in your feed.
         </SheetDescription>
       </SheetHeader>
 
-      <div className="space-y-6 px-4 pb-6 flex-1">
-        <Collapsible defaultOpen>
-          <CollapsibleTrigger asChild>
-            <button className="flex w-full items-center justify-between text-sm font-medium">
-              Categories
-              <ChevronDown className="size-4 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-            </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pt-2">
-            <div className="grid grid-cols-2 gap-2">
-              {CATEGORIES.map((category: Category) => (
-                <ToggleItem
-                  key={category}
-                  label={category}
-                  active={selectedCategories.includes(category)}
-                  onToggle={() => handleToggleCategory(category)}
-                  disabled={
-                    selectedCategories.length === 1 &&
-                    selectedCategories.includes(category)
-                  }
-                />
-              ))}
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+      <div className="min-h-0 flex-1">
+        <ScrollArea className="h-full">
+          <div className="space-y-6 px-4 pb-6">
+            <Collapsible defaultOpen>
+              <CollapsibleTrigger asChild>
+                <button className="flex w-full items-center justify-between text-sm font-medium">
+                  Categories
+                  <ChevronDown className="size-4 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-2">
+                <div className="grid grid-cols-2 gap-2">
+                  {CATEGORIES.map((category: Category) => (
+                    <ToggleItem
+                      key={category}
+                      label={category}
+                      active={selectedCategories.includes(category)}
+                      onToggle={() => handleToggleCategory(category)}
+                      disabled={
+                        selectedCategories.length === 1 &&
+                        selectedCategories.includes(category)
+                      }
+                    />
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
 
-        <Collapsible defaultOpen>
-          <CollapsibleTrigger asChild>
-            <button className="flex w-full items-center justify-between text-sm font-medium">
-              Sources
-              <ChevronDown className="size-4 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-            </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pt-2">
-            <div className="grid grid-cols-1 gap-2">
-              {SOURCES.map((source: Source) => (
-                <ToggleItem
-                  key={source}
-                  label={SOURCE_NAMES[source]}
-                  active={selectedSources.includes(source)}
-                  onToggle={() => handleToggleSource(source)}
-                  disabled={
-                    selectedSources.length === 1 &&
-                    selectedSources.includes(source)
-                  }
-                />
-              ))}
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+            <Collapsible defaultOpen>
+              <CollapsibleTrigger asChild>
+                <button className="flex w-full items-center justify-between text-sm font-medium">
+                  Sources
+                  <ChevronDown className="size-4 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-2">
+                <div className="grid grid-cols-1 gap-2">
+                  {SOURCES.map((source: Source) => (
+                    <ToggleItem
+                      key={source}
+                      label={SOURCE_NAMES[source]}
+                      active={selectedSources.includes(source)}
+                      onToggle={() => handleToggleSource(source)}
+                      disabled={
+                        selectedSources.length === 1 &&
+                        selectedSources.includes(source)
+                      }
+                    />
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
 
-        <Collapsible defaultOpen>
-          <CollapsibleTrigger asChild>
-            <button className="flex w-full items-center justify-between text-sm font-medium">
-              Excluded Writers
-              <ChevronDown className="size-4 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-            </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-3 pt-2">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => setWriterDialogOpen(true)}
-            >
-              Add Excluded Writer
-            </Button>
-            <ExcludedWritersList />
-            <AddWriterDialog
-              open={writerDialogOpen}
-              onOpenChange={setWriterDialogOpen}
-            />
-          </CollapsibleContent>
-        </Collapsible>
+            <Collapsible defaultOpen>
+              <CollapsibleTrigger asChild>
+                <button className="flex w-full items-center justify-between text-sm font-medium">
+                  Excluded Writers
+                  <ChevronDown className="size-4 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-3 pt-2">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setWriterDialogOpen(true)}
+                >
+                  Add Excluded Writer
+                </Button>
+                <ExcludedWritersList />
+                <AddWriterDialog
+                  open={writerDialogOpen}
+                  onOpenChange={setWriterDialogOpen}
+                />
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        </ScrollArea>
       </div>
-      <div className="flex justify-end p-4">
+
+      <div className="shrink-0 border-t p-4">
         <Button
           variant="outline"
           className="w-full"

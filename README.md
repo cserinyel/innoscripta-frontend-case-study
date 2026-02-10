@@ -426,6 +426,8 @@ The `useFilteredArticles` hook applies preference-based filters (excluded writer
 
 **Why:** Preference filters are inherently client-side concerns -- the external APIs don't understand our "excluded writers" or cross-source category model. Filtering in memory is instant and avoids refetching from three APIs when a user toggles a preference.
 
+**Why Excluded Writers(Authors) ove Preferred Authors?:** Excluded writers are a more common use case than preferred authors. It is more likely that a user will want to exclude a writer than to prefer a writer. Also since we are unable to know every author in every source, we can't easily filter by preferred authors.
+
 ### Parallel Multi-Source Fetching
 
 `useNewsSearch` uses React Query's `useQueries` to fire requests to all active sources simultaneously. Results are merged and sorted by date once all (or some) resolve.
