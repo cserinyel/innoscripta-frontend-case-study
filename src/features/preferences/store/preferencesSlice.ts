@@ -4,17 +4,9 @@ import {
   SOURCES,
 } from "@/features/news/constants";
 import type { Category, Source } from "@/features/news/api/lib/types";
-
-const STORAGE_KEY = "newshub_preferences";
-
-export type Theme = "light" | "dark";
-
-export interface PreferencesState {
-  selectedCategories: Category[];
-  selectedSources: Source[];
-  excludedWriters: string[];
-  theme: Theme;
-}
+import { STORAGE_KEY } from "../constants";
+import type { PreferencesState } from "../types";
+import { savePreferencesToStorage } from "../lib/utils";
 
 const defaultState: PreferencesState = {
   selectedCategories: [...CATEGORIES],
@@ -64,10 +56,6 @@ const loadFromStorage = (): PreferencesState => {
   }
 }
 
-const saveToStorage = (state: PreferencesState): void => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
 const preferencesSlice = createSlice({
   name: "preferences",
   initialState: loadFromStorage,
@@ -79,7 +67,7 @@ const preferencesSlice = createSlice({
       } else {
         state.selectedCategories.splice(idx, 1);
       }
-      saveToStorage(state);
+      savePreferencesToStorage(state);
     },
 
     toggleSource(state, action: PayloadAction<Source>) {
@@ -89,23 +77,23 @@ const preferencesSlice = createSlice({
       } else {
         state.selectedSources.splice(idx, 1);
       }
-      saveToStorage(state);
+      savePreferencesToStorage(state);
     },
 
     setCategories(state, action: PayloadAction<Category[]>) {
       state.selectedCategories = action.payload;
-      saveToStorage(state);
+      savePreferencesToStorage(state);
     },
 
     setSources(state, action: PayloadAction<Source[]>) {
       state.selectedSources = action.payload;
-      saveToStorage(state);
+      savePreferencesToStorage(state);
     },
 
     addExcludedWriter(state, action: PayloadAction<string>) {
       if (!state.excludedWriters.includes(action.payload)) {
         state.excludedWriters.push(action.payload);
-        saveToStorage(state);
+        savePreferencesToStorage(state);
       }
     },
 
@@ -113,13 +101,13 @@ const preferencesSlice = createSlice({
       const idx = state.excludedWriters.indexOf(action.payload);
       if (idx !== -1) {
         state.excludedWriters.splice(idx, 1);
-        saveToStorage(state);
+        savePreferencesToStorage(state);
       }
     },
 
     toggleTheme(state) {
       state.theme = state.theme === "dark" ? "light" : "dark";
-      saveToStorage(state);
+      savePreferencesToStorage(state);
     },
   },
   selectors: {

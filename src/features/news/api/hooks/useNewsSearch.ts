@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { useQueries, keepPreviousData } from "@tanstack/react-query";
-import type { NewsArticle } from "@/features/news/types/news";
+import type { NewsArticle } from "@/features/news/types";
 import type { SearchParams, SearchResult, ApiError } from "../lib/types";
 import { sourceRegistry } from "../newsAggregator";
 import { getErrorMessage } from "../lib/utils";

@@ -1,4 +1,4 @@
-import type { NewsArticle } from "@/features/news/types/news";
+import type { NewsArticle } from "@/features/news/types";
 import { generateArticleId, getCategoryBySourceId } from "../../lib/utils";
 import type { NytDocDto } from "./types";
 import { NYT_SOURCE_TO_CATEGORY_MAP } from "./categories";

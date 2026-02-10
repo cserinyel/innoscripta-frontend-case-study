@@ -1,4 +1,4 @@
-import type { NewsArticle } from "@/features/news/types/news";
+import type { NewsArticle } from "@/features/news/types";
 import type { CATEGORIES, SOURCES } from "../../constants";
 
 export interface SearchParams {

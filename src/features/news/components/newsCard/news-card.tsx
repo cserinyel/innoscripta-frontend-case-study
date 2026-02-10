@@ -1,4 +1,4 @@
-import type { NewsArticle } from "@/features/news/types/news";
+import type { NewsArticle } from "@/features/news/types";
 import { formatDate } from "@/features/news/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {

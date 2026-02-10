@@ -1,4 +1,4 @@
-import type { NewsArticle } from "@/features/news/types/news";
+import type { NewsArticle } from "@/features/news/types";
 import type { Category, Source } from "@/features/news/api/lib/types";
 
 interface ArticleFilterParams {

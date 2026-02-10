@@ -5,7 +5,7 @@ import {
   selectSelectedCategories,
   selectSelectedSources,
 } from "@/features/preferences/store/preferencesSlice";
-import type { NewsArticle } from "@/features/news/types/news";
+import type { NewsArticle } from "@/features/news/types";
 import { filterArticles } from "@/features/news/lib/filters";
 
 export const useFilteredArticles = (
