@@ -173,6 +173,205 @@ src/
 
 ## Design Choices and Rationale
 
+### DRY, KISS, and SOLID in Practice
+
+This project is intentionally structured to follow **DRY**, **KISS**, and **SOLID** principles. This section highlights how those principles show up concretely in the codebase.
+
+#### DRY — Don't Repeat Yourself
+
+- **Centralized filtering logic** — `filterArticles` in `src/features/news/lib/filters.ts` encapsulates all article filtering rules (sources, categories, excluded writers) so components and hooks don't reimplement them:
+
+```ts
+export const filterArticles = (
+  articles: NewsArticle[],
+  params: ArticleFilterParams,
+): NewsArticle[] => {
+  const allowedSourceNames: Set<string> = new Set(
+    params.selectedSources.map((id) => SOURCE_NAMES[id]),
+  );
+
+  return articles.filter((a) => {
+    if (!allowedSourceNames.has(a.source)) return false;
+    if (a.category && !params.selectedCategories.includes(a.category as never))
+      return false;
+    if (
+      a.author &&
+      params.excludedWriters.some((w) =>
+        new RegExp(
+          `\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+        ).test(a.author!),
+      )
+    )
+      return false;
+    return true;
+  });
+};
+```
+
+The `useFilteredArticles` hook in `src/features/news/api/hooks/useFilteredArticles.ts` reuses this function instead of duplicating the logic:
+
+```ts
+export const useFilteredArticles = (
+  articles: NewsArticle[],
+): NewsArticle[] => {
+  const excludedWriters = useAppSelector(selectExcludedWriters);
+  const selectedSources = useAppSelector(selectSelectedSources);
+  const selectedCategories = useAppSelector(selectSelectedCategories);
+
+  return useMemo(
+    () =>
+      filterArticles(articles, {
+        excludedWriters,
+        selectedSources,
+        selectedCategories,
+      }),
+    [articles, excludedWriters, selectedSources, selectedCategories],
+  );
+};
+```
+
+- **Single persistence path for preferences** — `preferencesSlice` in `src/features/preferences/store/preferencesSlice.ts` owns reading and writing preferences to `localStorage`. All reducers call `savePreferencesToStorage(state)` instead of scattering `localStorage` writes throughout the app:
+
+```ts
+const preferencesSlice = createSlice({
+  name: "preferences",
+  initialState: loadFromStorage,
+  reducers: {
+    toggleCategory(state, action: PayloadAction<Category>) {
+      const idx = state.selectedCategories.indexOf(action.payload);
+      if (idx === -1) {
+        state.selectedCategories.push(action.payload);
+      } else {
+        state.selectedCategories.splice(idx, 1);
+      }
+      savePreferencesToStorage(state);
+    },
+    // ...other reducers also call savePreferencesToStorage(state)
+  },
+});
+```
+
+This avoids duplicating serialization, validation, and storage access logic in multiple components.
+
+#### KISS — Keep It Simple, Stupid
+
+- **UI components focus on composition, not business logic** — `NewsContent` in `src/features/news/components/newsContent/news-content.tsx` orchestrates hooks and components with simple, readable control flow:
+
+```tsx
+const renderContent = () => {
+  if (isLoading) {
+    return <LoadingSkeleton />;
+  }
+
+  if (filteredArticles.length === 0) {
+    if (sourceErrors.length > 0) {
+      return (
+        <ErrorState
+          message={sourceErrors[0].message}
+          onRetry={handleSearch}
+        />
+      );
+    } else {
+      return <EmptyState hasSearched={hasSearched} />;
+    }
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {filteredArticles.map((article) => (
+          <NewsCard key={article.id} {...article} />
+        ))}
+      </div>
+      <ArticlePagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </>
+  );
+};
+```
+
+All data-fetching and filtering complexity lives in `useNewsSearch` and `useFilteredArticles`, so the component remains a clear description of UI states (loading, empty, error, results).
+
+- **Simple, declarative preferences UI** — `PreferencesPanel` in `src/features/preferences/components/PreferencesPanel.tsx` renders categories and sources by mapping over constant arrays. Toggling is a straightforward call to Redux actions:
+
+```tsx
+{CATEGORIES.map((category: Category) => (
+  <ToggleItem
+    key={category}
+    label={category}
+    active={selectedCategories.includes(category)}
+    onToggle={() => dispatch(toggleCategory(category))}
+  />
+))}
+
+{SOURCES.map((source: Source) => (
+  <ToggleItem
+    key={source}
+    label={SOURCE_NAMES[source]}
+    active={selectedSources.includes(source)}
+    onToggle={() => dispatch(toggleSource(source))}
+  />
+))}
+```
+
+No complex state machines or derived booleans live in the component; it simply reflects Redux state and dispatches minimal actions, keeping the UI logic easy to follow.
+
+#### SOLID
+
+- **Single Responsibility Principle (SRP)** — Each module does one thing:
+  - `useNewsSearch` (in `src/features/news/api/hooks/useNewsSearch.ts`) is responsible only for orchestrating multi-source queries, aggregating results and errors, and managing pagination.
+  - `useFilteredArticles` and `filterArticles` are responsible only for applying user preferences to a list of articles.
+  - `NewsContent` is responsible only for wiring hooks to UI components and rendering states.
+
+- **Open/Closed Principle (OCP)** — The source service pattern in `src/features/news/api/lib/types.ts` and `newsAggregator.ts` allows new news sources to be added without modifying existing logic:
+
+```ts
+export interface SourceService {
+  name: string;
+  search: (params: SearchParams) => Promise<SearchResult>;
+  getFetchKey: (params: SearchParams) => unknown[];
+}
+```
+
+`newsAggregator.ts` registers all implementations in `sourceRegistry`, and `useNewsSearch` simply iterates over that array:
+
+```ts
+const activeSources = useMemo(() => {
+  if (!searchParams) return [];
+  return searchParams.sources.length > 0
+    ? sourceRegistry.filter((s) => searchParams.sources.includes(s.name))
+    : sourceRegistry;
+}, [searchParams]);
+```
+
+Adding a new source means implementing `SourceService` in `src/features/news/api/sources/<name>/service.ts` and registering it; the rest of the system remains unchanged.
+
+- **Liskov Substitution Principle (LSP)** — Any implementation of `SourceService` can be used wherever the abstraction is expected. `useNewsSearch` treats all entries in `sourceRegistry` uniformly; it never branches on concrete source types:
+
+```ts
+activeSources.map((source) => ({
+  queryKey: [source.name, ...source.getFetchKey(paginatedParams)],
+  queryFn: (): Promise<SearchResult> => source.search(paginatedParams),
+  placeholderData: keepPreviousData,
+}))
+```
+
+Guardian, NYT, and NewsAPI services are interchangeable in this loop. Adding or removing a source does not require changes to `useNewsSearch` or `NewsContent`.
+
+- **Interface Segregation Principle (ISP)** — Consumers depend only on the methods and data they use; interfaces stay small and focused:
+  - **Selectors** — `preferencesSlice` exposes narrow selectors (`selectSelectedSources`, `selectSelectedCategories`, `selectExcludedWriters`, `selectTheme`). Components import only what they need (e.g. `useAppSelector(selectSelectedSources)` in `NewsContent`).
+  - **Hooks** — `useNewsSearch` returns a purpose-built surface (`articles`, `sourceErrors`, `page`, `totalPages`, `search`, `setPage`, etc.) instead of exposing raw React Query state. `useFilteredArticles` exposes only articles in and filtered articles out, so callers don't depend on filter internals.
+  - **UI primitives** — Components like `ToggleItem`, `SearchInput`, and `ArticlePagination` accept minimal props (`label`, `active`, `onToggle`; `value`, `onChange`, `onSearch`; `currentPage`, `totalPages`, `onPageChange`), so callers are not forced to pass or handle unrelated options.
+
+- **Dependency Inversion Principle (DIP)** — High-level modules depend on abstractions, not concrete details:
+  - **Features depend on hooks and selectors** — `NewsContent` depends on `useNewsSearch`, `useFilteredArticles`, and Redux selectors like `selectSelectedSources`. It does not import `axiosInstance`, API URLs, or `localStorage`. `PreferencesPanel` depends on `toggleCategory`, `toggleSource`, `clearPreferences`, and selectors, not on how preferences are persisted.
+  - **Services depend on shared abstractions** — Source services use the shared `axiosInstance` and the typed contracts `SearchParams`, `SearchResult`, and `NewsArticle`. They do not depend on any UI or component layer.
+
+These patterns keep modules easy to reason about, test, and extend as new requirements (additional sources, filters, or preference types) are added.
+
 ### Feature-Based Project Structure
 
 The codebase groups files by **feature** (`news`, `preferences`) rather than by type (`components/`, `hooks/`, `services/`). Each feature owns its API layer, components, business logic, types, and state.
