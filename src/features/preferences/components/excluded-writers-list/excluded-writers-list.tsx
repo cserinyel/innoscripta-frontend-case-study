@@ -4,7 +4,7 @@ import {
   selectExcludedWriters,
   removeExcludedWriter,
 } from "@/features/preferences/store/preferencesSlice";
-import FilterInput from "@/components/shared/filterInput/filter-input";
+import FilterInput from "@/components/shared/filter-input/filter-input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";

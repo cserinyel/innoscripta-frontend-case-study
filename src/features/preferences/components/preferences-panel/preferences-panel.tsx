@@ -23,9 +23,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Trash2 } from "lucide-react";
-import ToggleItem from "@/components/shared/toggleItem/toggle-item";
-import AddWriterDialog from "@/features/preferences/components/addWriterDialog/add-writer-dialog";
-import ExcludedWritersList from "@/features/preferences/components/excludedWritersList/excluded-writers-list";
+import ToggleItem from "@/components/shared/toggle-item/toggle-item";
+import AddWriterDialog from "@/features/preferences/components/add-writer-dialog/add-writer-dialog";
+import ExcludedWritersList from "@/features/preferences/components/excluded-writers-list/excluded-writers-list";
 import { toast } from "sonner";
 
 const PreferencesPanel = (): React.ReactElement => {

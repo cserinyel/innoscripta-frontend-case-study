@@ -1,4 +1,4 @@
-import FilterInput from "@/components/shared/filterInput/filter-input";
+import FilterInput from "@/components/shared/filter-input/filter-input";
 
 interface SearchInputProps {
   value: string;

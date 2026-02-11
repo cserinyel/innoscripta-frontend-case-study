@@ -1,8 +1,8 @@
 import { useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import SearchInput from "@/components/shared/searchInput/search-input";
-import NewsFilterBar from "@/features/news/components/newsFilterBar/news-filter-bar";
-import NewsContentBody from "@/features/news/components/newsContent/news-content-body";
+import SearchInput from "@/components/shared/search-input/search-input";
+import NewsFilterBar from "@/features/news/components/news-filter-bar/news-filter-bar";
+import NewsContentBody from "@/features/news/components/news-content/news-content-body";
 import { useAppSelector } from "@/app/hooks";
 import { selectSelectedSources } from "@/features/preferences/store/preferencesSlice";
 import { SOURCE_NAMES } from "@/features/news/constants";

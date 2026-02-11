@@ -3,9 +3,9 @@ import {
   selectSelectedCategories,
   selectSelectedSources,
 } from "@/features/preferences/store/preferencesSlice";
-import SingleSelectCombobox from "../../../../components/shared/singleSelectCombobox/single-select-combobox";
-import MultiSelectCombobox from "../../../../components/shared/multiSelectCombobox/multi-select-combobox";
-import DatePicker from "../../../../components/shared/datePicker/date-picker";
+import SingleSelectCombobox from "../../../../components/shared/single-select-combobox/single-select-combobox";
+import MultiSelectCombobox from "../../../../components/shared/multi-select-combobox/multi-select-combobox";
+import DatePicker from "../../../../components/shared/date-picker/date-picker";
 import { CATEGORY_NAMES, SOURCE_NAMES } from "@/features/news/constants";
 import type { CategoryType, SourceType } from "@/features/news/types";
 

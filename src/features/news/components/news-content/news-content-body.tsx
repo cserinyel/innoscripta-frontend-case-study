@@ -1,7 +1,7 @@
-import NewsCard from "@/features/news/components/newsCard/news-card";
-import LoadingSkeleton from "@/components/shared/loadingSkeleton/loading-skeleton";
-import ErrorState from "@/components/shared/errorState/error-state";
-import EmptyState from "@/components/shared/emptyState/empty-state";
+import NewsCard from "@/features/news/components/news-card/news-card";
+import LoadingSkeleton from "@/components/shared/loading-skeleton/loading-skeleton";
+import ErrorState from "@/components/shared/error-state/error-state";
+import EmptyState from "@/components/shared/empty-state/empty-state";
 import ArticlePagination from "@/components/shared/pagination/pagination";
 import type { NewsArticle } from "@/features/news/types";
 import type { ApiError } from "@/features/news/api/lib/types";

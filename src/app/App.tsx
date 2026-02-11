@@ -2,10 +2,10 @@ import { Provider } from "react-redux";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { store } from "@/app/store";
 import { queryClient } from "@/lib/queryClient";
-import Topbar from "@/components/layout/Topbar";
-import NewsContent from "@/features/news/components/newsContent/news-content";
+import Topbar from "@/components/layout/topbar";
+import NewsContent from "@/features/news/components/news-content/news-content";
 import { Toaster } from "@/components/ui/sonner";
-import ErrorBoundary from "@/components/errorBoundary/ErrorBoundary";
+import ErrorBoundary from "@/components/error-boundary/error-boundary";
 
 const App = (): React.ReactElement => (
   <Provider store={store}>
