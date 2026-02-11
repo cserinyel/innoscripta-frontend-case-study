@@ -43,6 +43,8 @@ const NewsContent = (): React.ReactElement => {
 
   const filteredArticles = useFilteredArticles(articles);
 
+  const isInitialMount = useRef(true);
+
   useEffect(() => {
     search({
       keyword: "",
@@ -53,6 +55,18 @@ const NewsContent = (): React.ReactElement => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
+
+  // Re-run the active search when preferred sources change (e.g. user toggles sources in preferences)
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    if (hasSearched) {
+      search(buildSearchParams(preferredSources));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preferredSources]);
 
   const handleSearch = useCallback(() => {
     search(buildSearchParams(preferredSources));
