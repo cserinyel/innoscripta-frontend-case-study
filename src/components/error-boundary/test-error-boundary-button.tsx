@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Bug } from "lucide-react";
 import { useState } from "react";
+import { Button } from "../ui/button";
 
 const TestErrorBoundaryButton = () => {
   const [shouldThrow, setShouldThrow] = useState(false);
