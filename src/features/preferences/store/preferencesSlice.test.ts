@@ -15,6 +15,7 @@ import preferencesReducer, {
   selectTheme,
 } from "./preferencesSlice";
 import { STORAGE_KEY } from "../constants";
+import { loadFromStorage } from "../lib/utils";
 import { CATEGORIES, SOURCES } from "@/features/news/constants";
 
 const createMockStorage = () => {
@@ -38,10 +39,13 @@ describe("preferencesSlice", () => {
     vi.stubGlobal("localStorage", mockStorage);
   });
 
-  const createStore = () =>
-    configureStore({
+  const createStore = () => {
+    const preloaded = loadFromStorage();
+    return configureStore({
       reducer: { preferences: preferencesReducer },
+      preloadedState: preloaded ? { preferences: preloaded } : undefined,
     });
+  };
 
   describe("loadFromStorage", () => {
     it("returns default state when localStorage is empty", () => {

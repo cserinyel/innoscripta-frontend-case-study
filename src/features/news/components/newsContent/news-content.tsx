@@ -1,29 +1,32 @@
-import { useState, useCallback, useRef, useEffect } from "react";
-import { toast } from "sonner";
+import { useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import SearchInput from "@/components/shared/searchInput/search-input";
 import NewsFilterBar from "@/features/news/components/newsFilterBar/news-filter-bar";
-import NewsCard from "@/features/news/components/newsCard/news-card";
-import LoadingSkeleton from "@/components/shared/loadingSkeleton/loading-skeleton";
-import ErrorState from "@/components/shared/errorState/error-state";
-import EmptyState from "@/components/shared/emptyState/empty-state";
-import ArticlePagination from "@/components/shared/pagination/pagination";
+import NewsContentBody from "@/features/news/components/newsContent/news-content-body";
 import { useAppSelector } from "@/app/hooks";
 import { selectSelectedSources } from "@/features/preferences/store/preferencesSlice";
 import { SOURCE_NAMES } from "@/features/news/constants";
 import { useNewsSearch } from "@/features/news/api/hooks/useNewsSearch";
 import { useFilteredArticles } from "@/features/news/api/hooks/useFilteredArticles";
-import type { SearchParams } from "@/features/news/api/lib/types";
-import type { CategoryType, SourceType } from "@/features/news/types";
+import { useNewsSearchForm } from "@/features/news/hooks/useNewsSearchForm";
+import { useSourceErrorToasts } from "@/features/news/hooks/useSourceErrorToasts";
 
 const NewsContent = (): React.ReactElement => {
-  const [keyword, setKeyword] = useState("");
-  const [activeSources, setActiveSources] = useState<SourceType[]>([]);
-  const [activeCategory, setActiveCategory] = useState<CategoryType | "">("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
-
   const contentRef = useRef<HTMLDivElement>(null);
+  const preferredSources = useAppSelector(selectSelectedSources);
+
+  const {
+    keyword,
+    setKeyword,
+    activeSources,
+    onSourcesChange,
+    activeCategory,
+    onCategoryChange,
+    dateFrom,
+    dateTo,
+    onDateChange,
+    buildSearchParams,
+  } = useNewsSearchForm();
 
   const {
     articles,
@@ -36,11 +39,11 @@ const NewsContent = (): React.ReactElement => {
     setPage,
   } = useNewsSearch();
 
-  const preferredSources = useAppSelector(selectSelectedSources);
+  useSourceErrorToasts(sourceErrors);
+
   const filteredArticles = useFilteredArticles(articles);
 
   useEffect(() => {
-    //initialize the search with the preferred sources and no filters or keywords on load
     search({
       keyword: "",
       sources: preferredSources.map((id) => SOURCE_NAMES[id]),
@@ -51,27 +54,9 @@ const NewsContent = (): React.ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
-  const handleSearch = () => {
-    const sourcesToQuery =
-      activeSources.length > 0
-        ? activeSources.filter((id) => preferredSources.includes(id))
-        : preferredSources;
-
-    const params: SearchParams = {
-      keyword,
-      sources: sourcesToQuery.map((id) => SOURCE_NAMES[id]),
-      category: activeCategory,
-      dateFrom,
-      dateTo,
-    };
-
-    search(params);
-  };
-
-  const handleDateChange = (from: string, to: string) => {
-    setDateFrom(from);
-    setDateTo(to);
-  };
+  const handleSearch = useCallback(() => {
+    search(buildSearchParams(preferredSources));
+  }, [search, buildSearchParams, preferredSources]);
 
   const handlePageChange = useCallback(
     (newPage: number) => {
@@ -80,59 +65,6 @@ const NewsContent = (): React.ReactElement => {
     },
     [setPage],
   );
-
-  const shownErrorsRef = useRef<Set<string>>(new Set());
-
-  useEffect(() => {
-    const currentKeys = new Set<string>();
-
-    sourceErrors.forEach((err) => {
-      const key = `${err.source ?? "Source"}:${err.message}`;
-      currentKeys.add(key);
-
-      if (!shownErrorsRef.current.has(key)) {
-        toast.error(`${err.source ?? "Source"}: ${err.message}`, {
-          id: err.source,
-        });
-      }
-    });
-
-    shownErrorsRef.current = currentKeys;
-  }, [sourceErrors]);
-
-  const renderContent = () => {
-    if (isLoading) {
-      return <LoadingSkeleton />;
-    }
-
-    if (filteredArticles.length === 0) {
-      if (sourceErrors.length > 0) {
-        return (
-          <ErrorState
-            message={sourceErrors[0].message}
-            onRetry={handleSearch}
-          />
-        );
-      } else {
-        return <EmptyState hasSearched={hasSearched} />;
-      }
-    }
-
-    return (
-      <>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredArticles.map((article) => (
-            <NewsCard key={article.id} {...article} />
-          ))}
-        </div>
-        <ArticlePagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      </>
-    );
-  };
 
   return (
     <div ref={contentRef} className="space-y-4">
@@ -144,12 +76,12 @@ const NewsContent = (): React.ReactElement => {
         />
         <NewsFilterBar
           activeSources={activeSources}
-          onSourcesChange={setActiveSources}
+          onSourcesChange={onSourcesChange}
           activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
+          onCategoryChange={onCategoryChange}
           dateFrom={dateFrom}
           dateTo={dateTo}
-          onDateChange={handleDateChange}
+          onDateChange={onDateChange}
         />
         <Button
           className="w-full md:w-auto"
@@ -159,7 +91,16 @@ const NewsContent = (): React.ReactElement => {
           {isLoading ? "Searching..." : "Search"}
         </Button>
       </div>
-      {renderContent()}
+      <NewsContentBody
+        isLoading={isLoading}
+        filteredArticles={filteredArticles}
+        sourceErrors={sourceErrors}
+        hasSearched={hasSearched}
+        page={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        onRetry={handleSearch}
+      />
     </div>
   );
 };

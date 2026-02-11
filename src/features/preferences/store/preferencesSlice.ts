@@ -5,20 +5,17 @@ import {
 } from "@/features/news/constants";
 import type { CategoryType, SourceType } from "@/features/news/types";
 import type { PreferencesState } from "../types";
-import { loadFromStorage, savePreferencesToStorage } from "../lib/utils";
 
-const defaultState: PreferencesState = {
+export const defaultState: PreferencesState = {
   selectedCategories: [...CATEGORIES],
   selectedSources: [...SOURCES],
   excludedWriters: [],
   theme: "light",
 };
 
-const initialState = loadFromStorage() || defaultState;
-
 const preferencesSlice = createSlice({
   name: "preferences",
-  initialState,
+  initialState: defaultState,
   reducers: {
     toggleCategory(state, action: PayloadAction<CategoryType>) {
       const idx = state.selectedCategories.indexOf(action.payload);
@@ -27,7 +24,6 @@ const preferencesSlice = createSlice({
       } else {
         state.selectedCategories.splice(idx, 1);
       }
-      savePreferencesToStorage(state);
     },
 
     toggleSource(state, action: PayloadAction<SourceType>) {
@@ -37,23 +33,19 @@ const preferencesSlice = createSlice({
       } else {
         state.selectedSources.splice(idx, 1);
       }
-      savePreferencesToStorage(state);
     },
 
     setCategories(state, action: PayloadAction<CategoryType[]>) {
       state.selectedCategories = action.payload;
-      savePreferencesToStorage(state);
     },
 
     setSources(state, action: PayloadAction<SourceType[]>) {
       state.selectedSources = action.payload;
-      savePreferencesToStorage(state);
     },
 
     addExcludedWriter(state, action: PayloadAction<string>) {
       if (!state.excludedWriters.includes(action.payload)) {
         state.excludedWriters.push(action.payload);
-        savePreferencesToStorage(state);
       }
     },
 
@@ -61,13 +53,11 @@ const preferencesSlice = createSlice({
       const idx = state.excludedWriters.indexOf(action.payload);
       if (idx !== -1) {
         state.excludedWriters.splice(idx, 1);
-        savePreferencesToStorage(state);
       }
     },
 
     toggleTheme(state) {
       state.theme = state.theme === "dark" ? "light" : "dark";
-      savePreferencesToStorage(state);
     },
 
     clearPreferences(state) {
@@ -75,8 +65,6 @@ const preferencesSlice = createSlice({
         ...defaultState,
         theme: state.theme,
       };
-
-      savePreferencesToStorage(newState);
       return newState;
     },
   },
