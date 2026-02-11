@@ -1,4 +1,3 @@
-
 import { formatDate } from "@/features/news/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -49,7 +48,9 @@ const NewsCard = ({
           <span className="text-muted-foreground text-xs">
             {formatDate(date)}
           </span>
-          <span className="text-muted-foreground text-xs">{author}</span>
+          {author && (
+            <span className="text-muted-foreground text-xs">{author}</span>
+          )}
         </CardHeader>
         <CardContent className="flex-1">
           <p className="text-muted-foreground line-clamp-3 text-sm">
@@ -60,7 +61,8 @@ const NewsCard = ({
           <Badge variant="outline">{source}</Badge>
           {category && (
             <Badge variant="secondary">
-              {CATEGORY_NAMES[category as keyof typeof CATEGORY_NAMES] ?? category}
+              {CATEGORY_NAMES[category as keyof typeof CATEGORY_NAMES] ??
+                category}
             </Badge>
           )}
         </CardFooter>

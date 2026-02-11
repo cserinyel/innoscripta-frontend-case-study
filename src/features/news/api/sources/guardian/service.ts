@@ -3,7 +3,7 @@ import type { SearchParams, SourceService, SearchResult, ApiError } from "../../
 import type { GuardianResponseDto } from "./types";
 import { normalizeGuardianResponse } from "./normalizer";
 import { mapCategoryToGuardianSections } from "./categories";
-import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/features/news/constants";
+import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES, SOURCE_NAMES } from "@/features/news/constants";
 import { buildNewsFetchKey } from "../../lib/utils";
 
 const API_KEY = import.meta.env.VITE_GUARDIAN_API_KEY as string;
@@ -42,7 +42,7 @@ const buildRequestParams = (
 };
 
 const guardianService: SourceService = {
-  name: "Guardian",
+  name: SOURCE_NAMES.guardian,
 
   getFetchKey: (params) => buildNewsFetchKey(params),
 

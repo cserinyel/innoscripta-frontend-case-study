@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import SearchInput from "@/components/shared/searchInput/search-input";
-import NewsFilterBar from "@/features/news/components/newsFilterBar/NewsFilterBar";
+import NewsFilterBar from "@/features/news/components/newsFilterBar/news-filter-bar";
 import NewsCard from "@/features/news/components/newsCard/news-card";
 import LoadingSkeleton from "@/components/shared/loadingSkeleton/loading-skeleton";
 import ErrorState from "@/components/shared/errorState/error-state";
@@ -14,7 +14,7 @@ import { SOURCE_NAMES } from "@/features/news/constants";
 import { useNewsSearch } from "@/features/news/api/hooks/useNewsSearch";
 import { useFilteredArticles } from "@/features/news/api/hooks/useFilteredArticles";
 import type { SearchParams } from "@/features/news/api/lib/types";
-import type { CategoryType, SourceType } from "../../types";
+import type { CategoryType, SourceType } from "@/features/news/types";
 
 const NewsContent = (): React.ReactElement => {
   const [keyword, setKeyword] = useState("");
@@ -40,6 +40,7 @@ const NewsContent = (): React.ReactElement => {
   const filteredArticles = useFilteredArticles(articles);
 
   useEffect(() => {
+    //initialize the search with the preferred sources and no filters or keywords on load
     search({
       keyword: "",
       sources: preferredSources.map((id) => SOURCE_NAMES[id]),

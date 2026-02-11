@@ -3,10 +3,9 @@ import {
   CATEGORIES,
   SOURCES,
 } from "@/features/news/constants";
-import type { Category, Source } from "@/features/news/api/lib/types";
-import { STORAGE_KEY } from "../constants";
+import type { CategoryType, SourceType } from "@/features/news/types";
 import type { PreferencesState } from "../types";
-import { savePreferencesToStorage } from "../lib/utils";
+import { loadFromStorage, savePreferencesToStorage } from "../lib/utils";
 
 const defaultState: PreferencesState = {
   selectedCategories: [...CATEGORIES],
@@ -15,52 +14,13 @@ const defaultState: PreferencesState = {
   theme: "light",
 };
 
-const loadFromStorage = (): PreferencesState => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      return defaultState;
-    }
-
-    const parsed = JSON.parse(raw) as Partial<PreferencesState>;
-
-    const state: PreferencesState = {
-      selectedCategories:
-        Array.isArray(parsed.selectedCategories) &&
-        parsed.selectedCategories.every((c) =>
-          (CATEGORIES as readonly string[]).includes(c),
-        )
-          ? parsed.selectedCategories
-          : [...CATEGORIES],
-      selectedSources:
-        Array.isArray(parsed.selectedSources) &&
-        parsed.selectedSources.every((s) =>
-          (SOURCES as readonly string[]).includes(s),
-        )
-          ? parsed.selectedSources
-          : [...SOURCES],
-      excludedWriters:
-        Array.isArray(parsed.excludedWriters) &&
-        parsed.excludedWriters.every((w) => typeof w === "string")
-          ? parsed.excludedWriters
-          : [],
-      theme:
-        parsed.theme === "light" || parsed.theme === "dark"
-          ? parsed.theme
-          : "light",
-    };
-
-    return state;
-  } catch {
-    return defaultState;
-  }
-}
+const initialState = loadFromStorage() || defaultState;
 
 const preferencesSlice = createSlice({
   name: "preferences",
-  initialState: loadFromStorage,
+  initialState,
   reducers: {
-    toggleCategory(state, action: PayloadAction<Category>) {
+    toggleCategory(state, action: PayloadAction<CategoryType>) {
       const idx = state.selectedCategories.indexOf(action.payload);
       if (idx === -1) {
         state.selectedCategories.push(action.payload);
@@ -70,7 +30,7 @@ const preferencesSlice = createSlice({
       savePreferencesToStorage(state);
     },
 
-    toggleSource(state, action: PayloadAction<Source>) {
+    toggleSource(state, action: PayloadAction<SourceType>) {
       const idx = state.selectedSources.indexOf(action.payload);
       if (idx === -1) {
         state.selectedSources.push(action.payload);
@@ -80,12 +40,12 @@ const preferencesSlice = createSlice({
       savePreferencesToStorage(state);
     },
 
-    setCategories(state, action: PayloadAction<Category[]>) {
+    setCategories(state, action: PayloadAction<CategoryType[]>) {
       state.selectedCategories = action.payload;
       savePreferencesToStorage(state);
     },
 
-    setSources(state, action: PayloadAction<Source[]>) {
+    setSources(state, action: PayloadAction<SourceType[]>) {
       state.selectedSources = action.payload;
       savePreferencesToStorage(state);
     },

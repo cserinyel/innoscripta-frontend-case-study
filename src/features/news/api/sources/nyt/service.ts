@@ -3,7 +3,7 @@ import type { SearchParams, SourceService, SearchResult, ApiError } from "../../
 import type { NytResponseDto } from "./types";
 import { normalizeNytResponse } from "./normalizer";
 import { mapCategoryToNytFilter } from "./categories";
-import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES } from "@/features/news/constants";
+import { DEFAULT_PAGE_SIZE, MAX_PAGINATABLE_ARTICLES, SOURCE_NAMES } from "@/features/news/constants";
 import { buildNewsFetchKey } from "../../lib/utils";
 
 const API_KEY = import.meta.env.VITE_NYT_API_KEY as string;
@@ -38,7 +38,7 @@ const buildRequestParams = (
 };
 
 const nytService: SourceService = {
-      name: "New York Times",
+  name: SOURCE_NAMES.nyt,
 
   getFetchKey: (params) => buildNewsFetchKey(params),
 

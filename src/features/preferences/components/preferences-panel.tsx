@@ -8,7 +8,7 @@ import {
   clearPreferences,
 } from "@/features/preferences/store/preferencesSlice";
 import { CATEGORIES, SOURCE_NAMES, SOURCES } from "@/features/news/constants";
-import type { Category, Source } from "@/features/news/api/lib/types";
+import type { CategoryType, SourceType } from "@/features/news/types";
 import {
   SheetContent,
   SheetDescription,
@@ -34,7 +34,7 @@ const PreferencesPanel = (): React.ReactElement => {
   const selectedSources = useAppSelector(selectSelectedSources);
   const [writerDialogOpen, setWriterDialogOpen] = useState(false);
 
-  const handleToggleSource = (source: Source) => {
+  const handleToggleSource = (source: SourceType) => {
     if (selectedSources.length === 1 && selectedSources.includes(source)) {
       toast.error("You must select at least one source.");
       return;
@@ -42,7 +42,7 @@ const PreferencesPanel = (): React.ReactElement => {
     dispatch(toggleSource(source));
   };
 
-  const handleToggleCategory = (category: Category) => {
+  const handleToggleCategory = (category: CategoryType) => {
     if (
       selectedCategories.length === 1 &&
       selectedCategories.includes(category)
@@ -77,7 +77,7 @@ const PreferencesPanel = (): React.ReactElement => {
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-2">
                 <div className="grid grid-cols-2 gap-2">
-                  {CATEGORIES.map((category: Category) => (
+                  {CATEGORIES.map((category: CategoryType) => (
                     <ToggleItem
                       key={category}
                       label={category}
@@ -102,7 +102,7 @@ const PreferencesPanel = (): React.ReactElement => {
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-2">
                 <div className="grid grid-cols-1 gap-2">
-                  {SOURCES.map((source: Source) => (
+                  {SOURCES.map((source: SourceType) => (
                     <ToggleItem
                       key={source}
                       label={SOURCE_NAMES[source]}

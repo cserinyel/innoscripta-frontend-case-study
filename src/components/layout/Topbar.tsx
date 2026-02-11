@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import PreferencesPanel from "@/features/preferences/components/PreferencesPanel";
+import PreferencesPanel from "@/features/preferences/components/preferences-panel";
 import { Settings } from "lucide-react";
 import TestErrorBoundaryButton from "../errorBoundary/TestErrorBoundaryButton";
 import ThemeSwitcher from "../shared/themeSwitcher/ThemeSwitcher";

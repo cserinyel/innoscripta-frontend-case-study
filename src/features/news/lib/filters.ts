@@ -1,11 +1,10 @@
-import type { NewsArticle } from "@/features/news/types";
-import type { Category, Source } from "@/features/news/api/lib/types";
+import type { NewsArticle, CategoryType, SourceType } from "@/features/news/types";
 import { SOURCE_NAMES } from "@/features/news/constants";
 
 interface ArticleFilterParams {
   excludedWriters: string[];
-  selectedSources: Source[];
-  selectedCategories: Category[];
+  selectedSources: SourceType[];
+  selectedCategories: CategoryType[];
 }
 
 export const filterArticles = (

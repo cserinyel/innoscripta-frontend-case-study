@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { filterArticles } from "./filters";
 import type { NewsArticle } from "@/features/news/types";
 import { SOURCE_NAMES } from "@/features/news/constants";
-import type { Category, Source } from "@/features/news/api/lib/types";
+import type { CategoryType, SourceType } from "@/features/news/types";
 
 const baseArticle: NewsArticle = {
   id: "1",
@@ -17,8 +17,8 @@ const baseArticle: NewsArticle = {
 
 const defaultParams = {
   excludedWriters: [] as string[],
-  selectedSources: ["guardian"] as Source[],
-  selectedCategories: ["technology"] as Category[],
+  selectedSources: ["guardian"] as SourceType[],
+  selectedCategories: ["technology"] as CategoryType[],
 };
 
 describe("filterArticles", () => {

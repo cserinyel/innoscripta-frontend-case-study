@@ -12,5 +12,6 @@ export interface NewsArticle {
   date: string;
 }
 
-export type SourceType = (typeof SOURCES)[number];
+
 export type CategoryType = (typeof CATEGORIES)[number];
+export type SourceType = (typeof SOURCES)[number];

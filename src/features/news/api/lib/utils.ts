@@ -15,7 +15,6 @@ export const generateArticleId = (input: string): string => {
 
   return Math.abs(hash).toString(36);
 };
-
 /**
  * Type guard to check if an unknown error is an ApiError.
  */

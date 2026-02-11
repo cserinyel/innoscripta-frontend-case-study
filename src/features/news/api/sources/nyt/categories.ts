@@ -12,7 +12,7 @@ export const NYT_CATEGORY_MAP: Record<string, string[]> = {
 
 /**
  * Reverse lookup: source ID -> category.
- * Built once from GUARDIAN_CATEGORY_MAP.
+ * Built once from NYT_CATEGORY_MAP.
  */
 export const NYT_SOURCE_TO_CATEGORY_MAP = getSourceToCategoryMap(NYT_CATEGORY_MAP);
 
