@@ -2,7 +2,7 @@ import { Provider } from "react-redux";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { store } from "@/app/store";
 import { queryClient } from "@/lib/queryClient";
-import Topbar from "@/components/layout/topbar";
+import Topbar from "@/components/layout/top-bar/top-bar";
 import NewsContent from "@/features/news/components/news-content/news-content";
 import { Toaster } from "@/components/ui/sonner";
 import ErrorBoundary from "@/components/error-boundary/error-boundary";

@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import PreferencesPanel from "@/features/preferences/components/preferences-panel/preferences-panel";
 import { Settings } from "lucide-react";
-import TestErrorBoundaryButton from "../error-boundary/test-error-boundary-button";
-import ThemeSwitcher from "../shared/theme-switcher/theme-switcher";
+import TestErrorBoundaryButton from "../../error-boundary/test-error-boundary-button";
+import ThemeSwitcher from "../../shared/theme-switcher/theme-switcher";
 
 const Topbar = (): React.ReactElement => {
   return (
